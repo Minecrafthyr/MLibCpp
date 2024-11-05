@@ -5,6 +5,8 @@
 #include <string>
 #include "type_utils.hpp"
 #include "ranges.hpp"
+#include "exception.hpp"
+
 #include "short_macros.hpp"
 
 namespace mlib {
@@ -14,339 +16,336 @@ public:
 	using this_type = default_operators_interface;
 
 	ce a & op+=(th a && self, a && right) {
-		self.value_for_default_op() += fw(right); return *th;
+		self.value_for_default_op() += fw(right); rt *th;
 	}
 	ce a & op-=(th a && self, a && right) {
-		self.value_for_default_op() -= fw(right); return *th;
+		self.value_for_default_op() -= fw(right); rt *th;
 	}
 	ce a & op*=(th a && self, a && right) {
-		self.value_for_default_op() *= fw(right); return *th;
+		self.value_for_default_op() *= fw(right); rt *th;
 	}
 	ce a & op/=(th a && self, a && right) {
-		self.value_for_default_op() /= fw(right); return *th;
+		self.value_for_default_op() /= fw(right); rt *th;
 	}
 	ce a & op%=(th a && self, a && right) {
-		self.value_for_default_op() %= fw(right); return *th;
+		self.value_for_default_op() %= fw(right); rt *th;
 	}
 	ce a & op&=(th a && self, a && right) {
-		self.value_for_default_op() &= fw(right); return *th;
+		self.value_for_default_op() &= fw(right); rt *th;
 	}
 	ce a & op|=(th a && self, a && right) {
-		self.value_for_default_op() |= fw(right); return *th;
+		self.value_for_default_op() |= fw(right); rt *th;
 	}
 	ce a & op^=(th a && self, a && right) {
-		self.value_for_default_op() ^= fw(right); return *th;
+		self.value_for_default_op() ^= fw(right); rt *th;
 	}
 	ce a & op<<=(th a && self, a && right) {
-		self.value_for_default_op() <<= fw(right); return *th;
+		self.value_for_default_op() <<= fw(right); rt *th;
 	}
 	ce a & op>>=(th a && self, a && right) {
-		self.value_for_default_op() >> fw(right); return *th;
+		self.value_for_default_op() >> fw(right); rt *th;
 	}
 
 	ce a & op++(th a && self) {
-		++self.value_for_default_op(); return *th;
+		++self.value_for_default_op(); rt *th;
 	}
 	ce a & op--(th a && self) {
-		--self.value_for_default_op(); return *th;
+		--self.value_for_default_op(); rt *th;
 	}
-	ce a op++(th a && self, int) {
-		return self.value_for_default_op()++;
+	ce a op++(th a && self, i) {
+		rt self.value_for_default_op()++;
 	}
-	ce a op--(th a && self, int) {
-		return self.value_for_default_op()--;
+	ce a op--(th a && self, i) {
+		rt self.value_for_default_op()--;
 	}
 	
 	ce a op+(th a && self) {
-		return +self.value_for_default_op();
+		rt +self.value_for_default_op();
 	}
 	ce a op-(th a && self) {
-		return -self.value_for_default_op();
+		rt -self.value_for_default_op();
 	}
 	ce a op+(th a && self, a && right) {
-		return self.value_for_default_op() + fw(right);
+		rt self.value_for_default_op() + fw(right);
 	}
 	ce a op-(th a && self, a && right) {
-		return self.value_for_default_op() - fw(right);
+		rt self.value_for_default_op() - fw(right);
 	}
 	ce a op*(th a && self, a && right) {
-		return self.value_for_default_op() * fw(right);
+		rt self.value_for_default_op() * fw(right);
 	}
 	ce a op/(th a && self, a && right) {
-		return self.value_for_default_op() / fw(right);
+		rt self.value_for_default_op() / fw(right);
 	}
 	ce a op%(th a && self, a && right) {
-		return self.value_for_default_op() % fw(right);
+		rt self.value_for_default_op() % fw(right);
 	}
 	ce a op~(th a && self) {
-		return ~self.value_for_default_op();
+		rt ~self.value_for_default_op();
 	}
 	ce a op&(th a && self, a && right) {
-		return self.value_for_default_op() & fw(right);
+		rt self.value_for_default_op() & fw(right);
 	}
 	ce a op|(th a && self, a && right) {
-		return self.value_for_default_op() | fw(right);
+		rt self.value_for_default_op() | fw(right);
 	}
 	ce a op^(th a && self, a && right) {
-		return self.value_for_default_op() ^ fw(right);
+		rt self.value_for_default_op() ^ fw(right);
 	}
 	ce a op<<(th a && self, a && right) {
-		return self.value_for_default_op() << fw(right);
+		rt self.value_for_default_op() << fw(right);
 	}
 	ce a op>>(th a && self, a && right) {
-		return self.value_for_default_op() >> fw(right);
+		rt self.value_for_default_op() >> fw(right);
 	}
 
 	ce a op!(th a && self) {
-		return !self.value_for_default_op();
+		rt !self.value_for_default_op();
 	}
 	ce a op&&(th a && self, a && right) {
-		return self.value_for_default_op() && fw(right);
+		rt self.value_for_default_op() && fw(right);
 	}
 	ce a op||(th a && self, a && right) {
-		return self.value_for_default_op() || fw(right);
+		rt self.value_for_default_op() || fw(right);
 	}
 	
 	ce a op==(th a && self, a && right) {
-		return self.value_for_default_op() == fw(right);
+		rt self.value_for_default_op() == fw(right);
 	}
 	ce a op!=(th a && self, a && right) {
-		return self.value_for_default_op() != fw(right);
+		rt self.value_for_default_op() != fw(right);
 	}
 	ce a op<(th a && self, a && right) {
-		return self.value_for_default_op() < fw(right);
+		rt self.value_for_default_op() < fw(right);
 	}
 	ce a op>(th a && self, a && right) {
-		return self.value_for_default_op() > fw(right);
+		rt self.value_for_default_op() > fw(right);
 	}
 	ce a op<=(th a && self, a && right) {
-		return self.value_for_default_op() <= fw(right);
+		rt self.value_for_default_op() <= fw(right);
 	}
 	ce a op>=(th a && self, a && right) {
-		return self.value_for_default_op() >= fw(right);
+		rt self.value_for_default_op() >= fw(right);
 	}
 	ce a op<=>(th a && self, a && right) {
-		return self.value_for_default_op() <=> fw(right);
+		rt self.value_for_default_op() <=> fw(right);
 	}
 	
 	ce a op[](th a && self, a && ... right) {
-		return self.value_for_default_op()[fw(right)...];
+		rt self.value_for_default_op()[fw(right)...];
 	}
 	ce a op*(th a && self) {
-		return *self.value_for_default_op();
+		rt *self.value_for_default_op();
 	}
 	ce a op&(th a && self) {
-		return &self.value_for_default_op();
+		rt &self.value_for_default_op();
 	}
 	ce a op->(th a && self) {
-		return self.value_for_default_op().op->();
+		rt self.value_for_default_op().op->();
 	}
 	ce a op->*(th a && self, a && right) {
-		return self.value_for_default_op().op->*(fw(right));
+		rt self.value_for_default_op().op->*(fw(right));
 	}
 
 	ce a op()(th a && self, a && ... right) {
-		return self.value_for_default_op()(fw(right)...);
+		rt self.value_for_default_op()(fw(right)...);
 	}
 	ce a op,(th a && self, a && right) {
-		return self.value_for_default_op(), fw(right);
+		rt self.value_for_default_op(), fw(right);
 	}
 };
-tp <::std::floating_point T>
-a from_chars(const char * begin, const char * end, ::std::chars_format fmt = ::std::chars_format::general) {
+tp <c_flt T>
+a from_chars(c ch begin, c ch * end, ::std::chars_format fmt = ::std::chars_format::general) {
 	T && result{};
 	a [ptr, errc] = ::std::from_chars(begin, end, result, fmt);
 	if (errc != ::std::errc{})
-		throw ::std::system_error(::std::make_error_code(errc));
-	return result;
+		throw system_error(errc);
+	rt result;
 }
-tp <::std::floating_point T>
-a from_chars(::std::ranges::random_access_range a range, ::std::chars_format fmt = ::std::chars_format::general)
+tp <c_flt T>
+a from_chars(ranges::random_access_range a c & range, ::std::chars_format fmt = ::std::chars_format::general)
 	requires(
-		::std::convertible_to<begin(range), const char *>&&
-		::std::convertible_to<end(range) - 1, const char *>) {
-	return from_chars(begin(range), end(range) - 1, fmt);
+		c_able_to<begin(range), c ch *>&&
+		c_able_to<end(range) - 1, c ch *>) {
+	rt from_chars<T>(begin(range), end(range) - 1, fmt);
 }
 
-tp <::std::integral T>
-a from_chars(const char * begin, const char * end, int base = 10) {
+tp <c_int T>
+a from_chars(c ch * begin, c ch * end, i base = 10) {
 	T && result{};
 	a [ptr, errc] = ::std::from_chars(begin, end, result, base);
 	if (errc != ::std::errc{})
-		throw ::std::system_error(::std::make_error_code(errc));
-	return result;
+		throw system_error(errc);
+	rt result;
 }
-tp <typename T>
-a from_chars(::std::ranges::random_access_range a range, int base = 10)
+tp <c_int T>
+a from_chars(ranges::random_access_range a c & range, i base = 10)
 	requires(
-		::std::convertible_to<begin(range), const char *>&&
-		::std::convertible_to<end(range) - 1, const char *>) {
-	return from_chars(begin(range), end(range) - 1, base);
+		c_able_to<begin(range), c ch *> &&
+		c_able_to<end(range) - 1, c ch *>) {
+	rt from_chars<T>(begin(range), end(range) - 1, base);
 }
 
-tp <std::integral value_type>
-class basic_wrapped_integer {
+tp <c_int T>
+class basic_wr_int {
 public:
-	using value_type = value_type;
+	using value_type = T;
 
-	static ce bool is_signed_v{~value_type() < value_type()};
-	static ce value_type min_v{
+	st ce bl is_signed_v{~value_type() < value_type()};
+	st ce value_type min_v{
 			is_signed_v ? (value_type(1) << (sizeof(value_type) * 8 - 1)) : 0
 		}, max_v{~min_v};
 
 	value_type value;
 
-	ce basic_wrapped_integer(value_type input) : 
+	ce basic_wr_int(value_type input) : 
 		value(input) {}
 
-	static ce a from_chars(char * first, char * last, int base = 10
-	) -> basic_wrapped_integer {
-		return from_chars(first, last, base);
+	st ce a from_chars(ch * First, ch * Last, i Base = 10) {
+		rt (basic_wr_int)from_chars(First, Last, Base);
 	}
-	static ce a from_str(std::string_view str, int base = 10
-	) -> basic_wrapped_integer {
-		return from_chars(str, base);
+	st ce a from_str(std::string_view Str, i Base = 10
+	) {
+		rt (basic_wr_int)from_chars(Str, Base);
 	}
-	ce dt(a) as_integer(th a const & self) {
-		return fw(self.value);
-	}
+	ce dt(a) as_int(th a c & self) { rt fw(self.value); }
 
-	static ce ::std::string to_string(basic_wrapped_integer wrapped) {
-		return ::std::to_string(wrapped.value);
+	st ce a to_string(basic_wr_int wr) {
+		rt ::std::to_string(wr.value);
 	}
-	ce ::std::string to_string(th basic_wrapped_integer self) {
-		return to_string(self);
+	ce a to_string(th basic_wr_int self) {
+		rt to_string(self);
 	}
-	ce op ::std::string(th basic_wrapped_integer self) {
-		return to_string(self);
+	ce op ::std::string(th basic_wr_int self) {
+		rt to_string(self);
 	}
-#define HYR_FN_BASIC_WRAPPED_INTEGER_OPERATOR2(op) \
+#define MLibBasicWrIntegerOp(op) \
 ce dt(a) op##op##(th a && self, value_type right) { \
-	self.value op right; return fw(self); \
+	self.value op right; rt fw(self); \
 }
-	HYR_FN_BASIC_WRAPPED_INTEGER_OPERATOR2(+=)
-	HYR_FN_BASIC_WRAPPED_INTEGER_OPERATOR2(-=)
-	HYR_FN_BASIC_WRAPPED_INTEGER_OPERATOR2(*=)
-	HYR_FN_BASIC_WRAPPED_INTEGER_OPERATOR2(/=)
-	HYR_FN_BASIC_WRAPPED_INTEGER_OPERATOR2(%=)
-	HYR_FN_BASIC_WRAPPED_INTEGER_OPERATOR2(&=)
-	HYR_FN_BASIC_WRAPPED_INTEGER_OPERATOR2(|=)
-	HYR_FN_BASIC_WRAPPED_INTEGER_OPERATOR2(^=)
-	HYR_FN_BASIC_WRAPPED_INTEGER_OPERATOR2(<<=)
-	HYR_FN_BASIC_WRAPPED_INTEGER_OPERATOR2(>>=)
+	MLibBasicWrIntegerOp(+=)
+	MLibBasicWrIntegerOp(-=)
+	MLibBasicWrIntegerOp(*=)
+	MLibBasicWrIntegerOp(/=)
+	MLibBasicWrIntegerOp(%=)
+	MLibBasicWrIntegerOp(&=)
+	MLibBasicWrIntegerOp(|=)
+	MLibBasicWrIntegerOp(^=)
+	MLibBasicWrIntegerOp(<<=)
+	MLibBasicWrIntegerOp(>>=)
 	
 
 	ce dt(a) op++(th a && self) {
-		++self.value; return fw(self);
+		++self.value; rt fw(self);
 	}
-	ce dt(a) op++(th a && self, int) {
-		return basic_wrapped_integer(self.value++);
+	ce dt(a) op++(th a && self, i) {
+		rt basic_wr_int(++self.value);
 	}
 	ce dt(a) op--(th a && self) {
-		--self.value; return fw(self);
+		--self.value; rt fw(self);
 	}
-	ce dt(a) op--(th a && self, int) {
-		return basic_wrapped_integer(self.value--);
+	ce dt(a) op--(th a && self, i) {
+		rt basic_wr_int(--self.value);
 	}
 
 
 };
 
-class wrapped_wchar {
+class wr_wchar {
 public:
 	using value_type = wchar_t;
 
 	value_type value;
 
-	ce op value_type() {
-		return value;
+	ce a & unwrap(th a && self) {
+		rt self.value;
 	}
 
-	static ce a to_ascii(value_type input) {
-		return value_type(input & 0x7f);
+	st ce a to_ascii(value_type input) {
+		rt value_type(input & 0x7f);
 	}
 	ce dt(a) to_ascii(th a && self) {
-		self.value &= 0x7f; return fw(self);
+		self.value &= 0x7f; rt fw(self);
 	}
 
-	static ce a to_lower(value_type input) {
-		static ce wchar_t diff = L'a' - L'A';
-		if (input >= L'A' && input <= L'Z') return input + diff;
-		return input;
+	st ce a to_lower(value_type input) {
+		st ce wchar_t diff = L'a' - L'A';
+		if (input >= L'A' && input <= L'Z') rt input + diff;
+		rt input;
 	}
 	ce dt(a) to_lower(th a && self) {
 		self = to_lower(self.value);
-		return fw(self);
+		rt fw(self);
 	}
 
-	static ce a to_upper(value_type input) {
-		static ce wchar_t diff = L'A' - L'z';
-		if (input >= L'a' && input <= L'z') return input + diff;
-		return input;
+	st ce a to_upper(value_type input) {
+		st ce wchar_t diff = L'A' - L'z';
+		if (input >= L'a' && input <= L'z') rt input + diff;
+		rt input;
 	}
-	ce wrapped_wchar & to_upper() {
+	ce wr_wchar & to_upper() {
 		if (value >= 'a' && value <= 'z') value += ('A' - 'a');
-		return *th;
+		rt *th;
 	}
 
-	static ce bool is_alpha(const a & input) {
-		return (input >= 'a' && input <= 'z') || (input >= 'A' && input <= 'Z');
+	st ce bl is_alpha(c a & input) {
+		rt (input >= 'a' && input <= 'z') || (input >= 'A' && input <= 'Z');
 	}
-	ce bool is_alpha() const {
-		return (value >= 'a' && value <= 'z') || (value >= 'A' && value <= 'Z');
+	ce bl is_alpha() c {
+		rt (value >= 'a' && value <= 'z') || (value >= 'A' && value <= 'Z');
 	}
 
-	static ce bool is_digit(const a & input) {
-		return (input >= '0' && input <= '9');
+	st ce bl is_digit(c a & input) {
+		rt (input >= '0' && input <= '9');
 	}
-	ce bool is_digit() const {
-		return (value >= '0' && value <= '9');
+	ce bl is_digit() c {
+		rt (value >= '0' && value <= '9');
 	}
 
 };
 
 
-class wrapped_float {
+class wr_float {
 public:
 	union {
-		float float_v;
-		::uint32_t uint_v;
+		float Float;
+		ui32 UInt;
 		struct {
-			::uint32_t fraction_v : 23, exponent_v : 8, sign_v : 1;
+			ui32 Frac : 23, Expo : 8, Sign : 1;
 		};
 	};
-	ce wrapped_float(float f) : float_v(f) {}
+	ce wr_float(float Float) : Float(Float) {}
 
 
-	a op^(th wrapped_float left, wrapped_float right) const {
-		return builtin::powf(float_v, right.float_v);
+	a op^(th wr_float left, wr_float right) c {
+		rt builtin::powf(Float, right.Float);
 	}
 
-	ce ::uint32_t fraction() const {
-		return fraction_v;
+	ce ui32 fraction() c {
+		rt Frac;
 	}
-	ce ::uint32_t exponent() const {
-		return exponent_v;
+	ce ui32 exponent() c {
+		rt Expo;
 	}
-	ce bool sign() const {
-		return sign_v;
+	ce bl sign() c {
+		rt Sign;
 	}
 
 	ce op float() {
-		return float_v;
+		rt Float;
 	}
 
 };
 
 
-using wrapped_int8 = basic_wrapped_integer<::int8_t>;
-using wrapped_uint8 = basic_wrapped_integer<::uint8_t>;
-using wrapped_int16 = basic_wrapped_integer<::int16_t>;
-using wrapped_uint16 = basic_wrapped_integer<::uint16_t>;
-using wrapped_int32 = basic_wrapped_integer<::int32_t>;
-using wrapped_uint32 = basic_wrapped_integer<::uint32_t>;
-using wrapped_int64 = basic_wrapped_integer<::int64_t>;
-using wrapped_uint64 = basic_wrapped_integer<::uint64_t>;
+using wr_int8 = basic_wr_int<::int8_t>;
+using wr_uint8 = basic_wr_int<::uint8_t>;
+using wr_int16 = basic_wr_int<::int16_t>;
+using wr_uint16 = basic_wr_int<::uint16_t>;
+using wr_int32 = basic_wr_int<::int32_t>;
+using wr_uint32 = basic_wr_int<::uint32_t>;
+using wr_int64 = basic_wr_int<::int64_t>;
+using wr_uint64 = basic_wr_int<::uint64_t>;
 
 }
 

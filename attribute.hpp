@@ -1,99 +1,87 @@
-#pragma once
-
+#ifndef MLib_Attribute
+#define MLib_Attribute 20241028L
 #include <cstdint>
 #include <map>
 #include <string>
 #include "concepts.hpp"
 #include "macros.hpp"
 
+#include "short_macros.hpp"
+
 namespace mlib {
 
 // template <class Type>
 class attribute {
-public:
+pub:
 	using value_type = double;
 
 	class modifier {
-	public:
-		value_type value;
+	pub:
+		value_type Val;
 		enum class op_t : ::std::uint8_t {
 			none, add_base, add_multiplied_base, multiply_total
-		} operation;
-		bool is_enabled = true;
+		} Op;
+		bl IsEnabled = t;
 
-		constexpr modifier(
-			value_type value = value_type(0),
-			op_t operation = op_t::none,
-			bool is_enabled = true) :
-			value(value), operation(operation), is_enabled(is_enabled) {}
+		ce modifier(
+			value_type Value = value_type(0),
+			op_t Op = op_t::none,
+			bl IsEnabled = t) :
+			Val(Value), Op(Op), IsEnabled(IsEnabled) {}
 
 	};
 
-	static const value_type DefaultBase;
+	st c value_type DefaultBase;
 	value_type Base;
 
-	class modifiers_t {
-	public:
+	class modifiers : pri ::std::map<std::string_view, modifier> {
+	pub:
 		using map_type = ::std::map<std::string_view, modifier>;
-
-	private:
-		map_type map_v;
+		using map_value_type = map_type::value_type;
 		
-	public:
-		bool is_changed_v = false;
+	pub:
+		bl IsChanged = f;
 
 		enum successful : ::std::uint8_t {
 			fail = 0,
 			unchanged = 1,
 			success = 2
 		};
-
-		[[nodiscard]] bool empty() const noexcept {
-			return map_v.empty();
+		using map_type::empty;
+		[[nodiscard]]
+		dt(a) op[](a && ... Val) const & { rt op[](fw(Val)...) };
+		[[nodiscard]]
+		a begin() { rt cbegin(); }
+		[[nodiscard]]
+		a end() { rt cend(); }
+		successful set_value(c std::string_view & key, value_type value) {
+			a iter = Map.find(key);
+			if (iter == Map.end()) [[unlikely]] rt fail;
+			else if (iter->second.Val == value) [[unlikely]] rt unchanged;
+			else { iter->second.Val = value; IsChanged = t; rt success; }
 		}
-		[[nodiscard]] decltype(auto) begin() noexcept {
-			return map_v.begin();
+		successful set_enabled(c std::string_view & key, bl enabled) {
+			a iter = Map.find(key);
+			if (iter == Map.end()) [[unlikely]] rt fail;
+			else if (iter->second.IsEnabled == enabled) [[unlikely]] rt unchanged;
+			else { iter->second.IsEnabled = enabled; IsChanged = t; rt success; }
 		}
-		[[nodiscard]] decltype(auto) end() noexcept {
-			return map_v.end();
+		successful set_type(c std::string_view & key, modifier::op_t operation) {
+			a iter = Map.find(key);
+			if (iter == Map.end()) [[unlikely]] rt fail;
+			else if (iter->second.Op == operation) [[unlikely]] rt unchanged;
+			else { iter->second.Op = operation; IsChanged = t; rt success; }
 		}
-		[[nodiscard]] decltype(auto) operator[](auto && ... key) {
-			return map_v[MLibForward(key)...];
+		bl add(c map_value_type & input) {
+			if (Map.insert(input).second)
+				IsChanged = t, rt t;
+			else rt f;
 		}
-
-		successful set_value(const std::string_view & key, value_type value) {
-			auto iterator = map_v.find(key);
-			if (iterator == map_v.end()) [[unlikely]] return fail;
-			else if (iterator->second.value == value) [[unlikely]] return unchanged;
-			else { iterator->second.value = value; is_changed_v = true; return success; }
-		}
-		successful set_enabled(const std::string_view & key, bool enabled) {
-			auto iterator = map_v.find(key);
-			if (iterator == map_v.end()) [[unlikely]] return fail;
-			else if (iterator->second.is_enabled == enabled) [[unlikely]] return unchanged;
-			else { iterator->second.is_enabled = enabled; is_changed_v = true; return success; }
-		}
-		successful set_type(const std::string_view & key, modifier::op_t operation) {
-			auto iterator = map_v.find(key);
-			if (iterator == map_v.end()) [[unlikely]] return fail;
-			else if (iterator->second.operation == operation) [[unlikely]] return unchanged;
-			else { iterator->second.operation = operation; is_changed_v = true; return success; }
-		}
-		bool add(const map_type::value_type & input) {
-			if (map_v.insert(input).second) {
-				is_changed_v = true;
-				return true;
-			}
-			else return false;
-		}
-		template <class ... ValType>
-			requires (::std::constructible_from<map_type::value_type, ValType ...>)
-		bool add(ValType && ... input) {
-			if (map_v.insert(::std::forward<ValType>(input)...).second) {
-				is_changed_v = true;
-				return true;
-			}
-			else return false;
+			
+		bl add(auto && ... input) rq rq { map_value_type{fw(input)...}; } {
+			if (Map.insert(fw(input)...).second)
+				IsChanged = t, rt t;
+			else rt f;
 		}
 
 	} modifiers;
@@ -108,9 +96,9 @@ public:
 				add_multiplied_base{0.0},
 				multiply_total{0.0};
 
-			for (const auto & pair : modifiers) {
-				const auto & _modifier = pair.second;
-				if (_modifier.is_enabled) switch (_modifier.operation) {
+			for (c a & pair : modifiers) {
+				c a & _modifier = pair.second;
+				if (_modifier.IsEnabled) switch (_modifier.Op) {
 					using _op = modifier::op_t;
 				case _op::add_base: add_base += _modifier.value; break;
 				case _op::add_multiplied_base: add_multiplied_base += _modifier.value; break;
@@ -120,21 +108,22 @@ public:
 			}
 			result_cache = (Base + add_base + Base * add_multiplied_base) * multiply_total;
 		}
-		modifiers.is_changed_v = false;
+		modifiers.IsChanged = f;
 	}
 
 	value_type get() {
-		if (modifiers.is_changed_v) do_cache();
-		return result_cache;
+		if (modifiers.IsChanged) do_cache();
+		rt result_cache;
 	}
 
-	value_type operator*() {
-		return get();
-	}
-	operator value_type() {
-		return get();
+	value_type op*() {
+		rt get();
 	}
 };
 
 
 }
+
+#include "undef_short_macros.hpp"
+
+#endif

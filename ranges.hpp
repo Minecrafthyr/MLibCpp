@@ -1,88 +1,91 @@
 #ifndef MLib_Ranges
-#define MLib_Ranges 20241029L
+#define MLib_Ranges 20241101L
 
 #include <ranges>
 #include "concepts.hpp"
 
+#include "short_macros.hpp"
 
-namespace mlib {
+ns mlib {
+ns ranges = ::std::ranges;
 
-namespace std_r {
-using namespace ::std::ranges;
-}
-
-inline constexpr decltype(auto) data = std_r::data;
-inline constexpr decltype(auto) size = std_r::size;
-inline constexpr decltype(auto) begin = std_r::begin;
-inline constexpr decltype(auto) end = std_r::end;
+il ce dt(a) data = ranges::data;
+il ce dt(a) size = ranges::size;
+il ce dt(a) begin = ranges::begin;
+il ce dt(a) end = ranges::end;
 
 
-template <::std::integral OffsetType>
-class index_range {
+tp <::std::integral OffsetType>
+cs index_range {
 public:
   using offset_type = OffsetType;
   offset_type Begin, End;
   
-  constexpr index_range(offset_type End) :
+  ce index_range(offset_type End) :
     Begin(0), End(End) {}
-  constexpr index_range(offset_type Begin, offset_type End) :
+  ce index_range(offset_type Begin, offset_type End) :
     Begin(Begin), End(End) {}
 
   /// @brief Check is `offset` inside this range. [Begin, End]
   /// @param self
   /// @param offset
-  [[gnu::always_inline]] constexpr auto is_value_inside(
-    this auto && self, offset_type offset) {
-    return self.Range->Begin <= offset && offset <= self.Range->End;
+  [[gnu::always_inline]]
+  ce a is_value_inside(th a && self, offset_type offset) {
+    rt self.Range->Begin <= offset && offset <= self.Range->End;
   }
-  /// @brief Check is `offset` valid on dereference with this range. [Begin, End)
+  /// @brief Check is `offset` valid on dereference with th range. [Begin, End)
   /// @param self 
   /// @param offset
-  [[gnu::always_inline]] constexpr auto is_value_deref(
-    this auto && self, offset_type offset) {
-    return self.Range->Begin <= offset && offset < self.Range->End;
+  [[gnu::always_inline]]
+  ce a is_value_deref(th a && self, offset_type offset) {
+    rt self.Range->Begin <= offset && offset < self.Range->End;
   }
   
   class iterator {
   public:
     index_range * Range;
     offset_type Cur;
-    constexpr iterator(index_range & Range, offset_type Cur = offset_type(0)) :
+    ce iterator(index_range & Range, offset_type Cur = offset_type(0)) :
       Range(&Range), Cur(Cur) {}
     
-    [[nodiscard, gnu::always_inline]] constexpr auto operator*(this auto && self) { return self.Cur; }
+    [[nodiscard, gnu::always_inline]]
+    ce a operator*(th a && self) { rt self.Cur; }
     
-    [[gnu::always_inline]] constexpr auto operator+(this const auto & self, offset_type offset) {
-      if constexpr (consteval || _DEBUG)
+    [[gnu::always_inline]]
+    ce a operator+(th c a & self, offset_type offset) {
+      if ce (::std::__is_constant_evaluated() || _DEBUG)
         if (self.Range->as_inside(self.Cur + offset)) {}
         else { throw; }
-      return iterator(*self.Range, self.Cur + offset);
+      rt iterator(*self.Range, self.Cur + offset);
     }
-    [[gnu::always_inline]] constexpr auto operator-(this const auto & self, offset_type offset) {
-      if constexpr (consteval || _DEBUG)
+    [[gnu::always_inline]]
+    ce a operator-(th c a & self, offset_type offset) {
+      if ce (::std::__is_constant_evaluated() || _DEBUG)
         if (self.Range->as_inside(self.Cur + offset)) {}
         else { throw; }
-      return iterator(*self.Range, self.Cur - offset);
+      rt iterator(*self.Range, self.Cur - offset);
     }
 
-    [[gnu::always_inline]] constexpr auto operator++(this auto & self) -> dc(auto) {
+    [[gnu::always_inline]]
+    ce a operator++(th a & self) -> dt(a) {
       self - 1;
-      ++self.Cur; return self;
+      ++self.Cur; rt self;
     }
-    [[gnu::always_inline]] constexpr auto operator--(this auto & self) -> dct(auto) {
+    [[gnu::always_inline]]
+    ce a operator--(th a & self) -> dt(a) {
       self - 1;
-      --self.Cur; return self;
+      --self.Cur; rt self;
     }
     
   };
 
 
-  constexpr auto begin(this const auto && self) { return iterator(self); }
-  constexpr auto end(this const auto && self) { return iterator(self, self.End); }
+  ce a begin(th c a && self) { rt iterator(self); }
+  ce a end(th c a && self) { rt iterator(self, self.End); }
 
 };
 
-template <typename Type, Type MinValue, typename Fn>
+tp <tn Type, Type MinValue, tn Fn>
 class limited_min {
 public:
   using value_type = Type;
@@ -92,5 +95,7 @@ public:
 
 
 }
+
+#include "undef_short_macros.hpp"
 
 #endif

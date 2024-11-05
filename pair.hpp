@@ -5,13 +5,12 @@
 namespace mlib {
 
 template <c_object Type, c_object Type2 = Type>
-class pair;
+struct pair;
 template <c_object Type, c_object Type2 = Type>
 pair(Type &&, Type &&) -> pair<Type, Type2>;
 
 template <c_object Type, c_object Type2 = Type>
-class pair {
-public:
+struct pair {
 	using first_type = Type;
 	using second_type = Type2;
 
@@ -27,10 +26,8 @@ public:
 	constexpr pair(::std::convertible_to<first_type> auto && first, ::std::convertible_to<second_type> auto && second)
 		: first(first), second(second) {}
 
-	pair(const pair &) = default;
-	pair(pair &&) = default;
-
-
+	constexpr pair(const pair &) = default;
+	constexpr pair(pair &&) = default;
 };
 
 
@@ -42,8 +39,7 @@ template <typename Type, typename Type2>
 ref_pair(Type &&, Type2 &&) -> ref_pair<Type &&, Type2 &&>;
 
 template <typename Type, typename Type2>
-class ref_pair {
-public:
+struct ref_pair {
 	using first_type = Type;
 	using second_type = Type2;
 
@@ -54,11 +50,9 @@ public:
 		first(first), second(second) {}
 
 	constexpr ref_pair(auto && pair) requires(
-		::std::convertible_to<decltype(pair.first), first_type> &&
-		::std::convertible_to<decltype(pair.second), second_type>) :
+		c_able_to<decltype(pair.first), first_type> &&
+		c_able_to<decltype(pair.second), second_type>) :
 		first(pair.first), second(pair.second) {}
-
-
 };
 
 }

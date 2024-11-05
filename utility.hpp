@@ -1,44 +1,49 @@
 #ifndef MLib_Utility
 #define MLib_Utility 20241026L
 
+#include <cstdint>
 #include <array>
-#include <ranges>
 #include <string_view>
+
+#include "ranges.hpp"
 #include "macros.hpp"
 
-namespace mlib {
-using namespace ::std::literals;
+#include "short_macros.hpp"
 
+ns mlib {
+us ns ::std::literals;
 
-template <typename T>
-using type = T;
+tp <tn T>
+us type = T;
 
-
-inline constexpr void for_each_with_delimiter(::std::ranges::range auto r, auto fn, auto const& delimiter = ", "sv) {
-  auto it = ::std::ranges::begin(r);
-  auto end = ::std::ranges::cend(r);
-  if (it == end) return;
-  fn(*it); ++it;
-  for (; it != end; fn(delimiter), fn(*it), ++it);
+il ce vi for_each_with_delimiter(ranges::range a r, a fn, c a & delimiter = ", "sv) {
+  a __i = ranges::begin(r);
+  a __end = ranges::cend(r);
+  if (__i == __end) rt;
+  fn(*__i); ++__i;
+  for (; __i != __end; fn(delimiter), fn(*__i), ++__i);
   
 }
 
-inline constexpr void out_with_delimiter(::std::ranges::range auto r, auto & out, auto const& delimiter = ", "sv) {
-  for_each_with_delimiter(r, [](auto const& in){ out << in; }, delimiter);
+il ce vi out_with_delimiter(ranges::range a r, a & out, c a & delimiter = ", "sv) {
+  for_each_with_delimiter(r, [](c a & in){ out << in; }, delimiter);
 }
-template <typename T>
-inline constexpr decltype(auto) none = T{};
-template <typename T>
-inline constexpr decltype(auto) null = [](){
-  if constexpr (requires { static_cast<T>(::std::nullopt); })
-    return static_cast<T>(::std::nullopt);
-  else if constexpr (requires { static_cast<T>(nullptr); })
-    return static_cast<T>(nullptr);
-  else if constexpr (requires { static_cast<T>(0); })
-    return static_cast<T>(0);
-  else return std::bit_cast<T>(::std::array<unsigned char, sizeof(T)>{});
+tp <tn T>
+il ce dt(a) none = T{};
+tp <tn T>
+il ce dt(a) null = [](){
+  if ce (rq { st_cast<T>(::std::nullopt); })
+    rt st_cast<T>(::std::nullopt);
+  elif ce (rq { st_cast<T>(np); })
+    rt st_cast<T>(np);
+  elif ce (rq { st_cast<T>(0); })
+    rt st_cast<T>(0);
+  else rt ::std::bit_cast<T>(::std::array<::std::uint8_t, sizeof(T)>{});
 }();
 
 }
+
+
+#include "undef_short_macros.hpp"
 
 #endif
