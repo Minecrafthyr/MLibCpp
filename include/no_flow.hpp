@@ -1,20 +1,22 @@
-#pragma once
-
+// Copyright © 2024 Minecraft_hyr - MIT License
+#ifndef MLib_NoFlow
+#define MLib_NoFlow 20241112L
 #include <concepts>
 #include <limits>
 #include <utility>
+#include <cmath>
 
-#include "type_utils.hpp"
+#include "types.hpp"
 
 namespace mlib {
 
+template <c_signed_int T>
 [[nodiscard, gnu::always_inline]]
-template <c_sint T>
 constexpr int bin_sign(T Val) {
 	return Val < T{} ? -1 : 0;
 }
+template <c_signed_int T>
 [[nodiscard, gnu::always_inline]]
-template <c_sint T>
 constexpr int num_sign(T Val) {
 	return (T{} < Val) - (Val < T{});
 }
@@ -26,7 +28,7 @@ enum flow_state : int8_t {
 	overflow = 1
 };
 
-template <c_uint T>
+template <c_unsigned_int T>
 constexpr auto no_flow_add(T A, T B) {
 	using unsigned_type = T;
 	using signed_type = ::std::make_signed_t<T>;
@@ -38,7 +40,7 @@ constexpr auto no_flow_add(T A, T B) {
 		return Max;
 	return C;
 }
-template <c_sint T>
+template <c_signed_int T>
 constexpr auto no_flow_add(T A, T B) {
 	using unsigned_type = ::std::make_unsigned_t<T>;
 	using signed_type = T;
@@ -50,7 +52,7 @@ constexpr auto no_flow_add(T A, T B) {
 	return C;
 }
 
-template <c_uint T>
+template <c_unsigned_int T>
 constexpr flow_state flow_state_add(T A, T B) {
 	using unsigned_type = T;
 	using signed_type = ::std::make_signed_t<T>;
@@ -61,7 +63,7 @@ constexpr flow_state flow_state_add(T A, T B) {
 		return flow_state::overflow;
 	return flow_state::no_flow;
 }
-template <c_sint T>
+template <c_signed_int T>
 constexpr auto flow_state_add(T A, T B) {
 	using unsigned_type = ::std::make_unsigned_t<T>;
 	using signed_type = T;
@@ -74,7 +76,7 @@ constexpr auto flow_state_add(T A, T B) {
 }
 
 
-template <c_sint T>
+template <c_signed_int T>
 class no_flow {
 public:
 	using value_type = T;
@@ -105,7 +107,7 @@ public:
 		return *this = *this + right;
 	}
 
-	constexpr flow_state flow_state_loop_multiphy(no_flow left, c_uint auto right) {
+	constexpr flow_state flow_state_loop_multiphy(no_flow left, c_unsigned_int auto right) {
 		if (right != 0) while (--right != 0)
 		switch (flow_state_add(left, left)) {
 		case flow_state::underflow: return flow_state::underflow;
@@ -114,7 +116,7 @@ public:
 		}
 		return flow_state::no_flow;
 	}
-	constexpr T loop_multiphy(no_flow left, c_uint auto right) {
+	constexpr T loop_multiphy(no_flow left, c_unsigned_int auto right) {
 		if (right != 0) while (--right != 0)
 		switch (flow_state_add(left, left)) {
 		case flow_state::underflow: return Min;
@@ -124,7 +126,7 @@ public:
 		return *left;
 	}
 
-	constexpr T operator*(c_uint auto right) {
+	constexpr T operator*(c_unsigned_int auto right) {
 		return loop_multiphy(*this, right);
 	}
 	constexpr T operator*(std::signed_integral auto right) {
@@ -133,7 +135,7 @@ public:
 			: loop_multiphy(*this, right);
 
 	}
-	constexpr no_flow & operator*=(c_uint auto right) {
+	constexpr no_flow & operator*=(c_unsigned_int auto right) {
 		return *this = *this * right;
 	}
 	constexpr no_flow & operator*=(std::signed_integral auto right) {
@@ -144,3 +146,5 @@ public:
 
 
 }
+
+#endif

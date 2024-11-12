@@ -1,0 +1,1 @@
+A small project that shows a weird modern C++ library. May doesn't work.

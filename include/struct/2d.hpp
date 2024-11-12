@@ -1,16 +1,15 @@
+// Copyright © 2024 Minecraft_hyr - MIT License
 #ifndef MLib_Struct_2D
-#define MLib_Struct_2D 20241102L
+#define MLib_Struct_2D 20241112L
 
 #include "base.hpp"
 
 namespace mlib {
 
-
-template <class Type>
-class rectangle2 {
-public:
-	using value_type = Type;
-	static constexpr ::size_t Size{2};
+template <typename T>
+struct rectangle2 {
+	using value_type = T;
+	static constexpr ::std::size_t Size{2};
 
 	union {
 		value_type BuiltinArray[Size];
@@ -21,11 +20,10 @@ public:
 
 };
 
-template <class Type>
-class rectangle4 {
-public:
-	using value_type = Type;
-	static constexpr ::size_t Size{4};
+template <typename T>
+struct rectangle4 {
+	using value_type = T;
+	static constexpr ::std::size_t Size{4};
 
 	union {
 		value_type BuiltinArray[Size];
