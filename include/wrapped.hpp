@@ -5,42 +5,40 @@
 #include <charconv>
 #include <string>
 #include "builtin.hpp"
-#include "pair.hpp"
 #include "macros/normal.hpp"
 #include "ranges.hpp"
 #include "exception.hpp"
-#include "types.hpp"
 
 namespace mlib {
 
-template <c_float T>
-auto from_chars(const char * _begin, const char * _end, ::std::chars_format _format = ::std::chars_format::general)
+template <FloatingPoint T>
+auto from_chars(char const* _begin, char const* _end, ::std::chars_format _format = ::std::chars_format::general)
 {
 	T && _result{};
 	auto [_ptr, _errc] = ::std::from_chars(_begin, _end, _result, _format);
 	if (_errc != ::std::errc{}) throw system_error(_errc);
 	return _result;
 }
-template <c_float T>
-auto from_chars(ranges::random_access_range auto const & _range, ::std::chars_format fmt = ::std::chars_format::general)
-requires(c_to<decltype(begin(_range)), const char *>
-&& c_to<decltype(end(_range) - 1), const char *>)
+template <FloatingPoint T>
+auto from_chars(ranges::random_access_range auto const& _range, ::std::chars_format fmt = ::std::chars_format::general)
+requires(ConvertibleTo<decltype(begin(_range)), char const*>
+&& ConvertibleTo<decltype(end(_range) - 1), char const*>)
 { return from_chars<T>(begin(_range), end(_range) - 1, fmt); }
 
-template <c_int T>
-auto from_chars(const char * _begin, const char * _end, int _base = 10) {
+template <Integral T>
+auto from_chars(char const* _begin, char const* _end, int _base = 10) {
 	T && _result{};
 	auto [_ptr, _errc] = ::std::from_chars(_begin, _end, _result, _base);
 	if (_errc != ::std::errc{}) throw system_error(_errc);
 	return _result;
 }
-template <c_int T>
+template <Integral T>
 auto from_chars(ranges::random_access_range auto const & _range, int _base = 10)
-requires(c_to<decltype(begin(_range)), const char *>
-&& c_to<decltype(end(_range) - 1), const char *>)
+requires(ConvertibleTo<decltype(begin(_range)), char const*>
+&& ConvertibleTo<decltype(end(_range) - 1), char const*>)
 { return from_chars<T>(begin(_range), end(_range) - 1, _base); }
 
-template <c_int T>
+template <Integral T>
 class basic_wrapped_int
 {
 public:
@@ -64,72 +62,17 @@ public:
 	{ return ::std::to_string(self.value); }
 	constexpr operator ::std::string(this basic_wrapped_int self)
 	{ return self.to_string(); }
-	constexpr decltype(auto) operator+=(this auto && self, value_type _right)
-	{ self.value += _right; return self; }
-	constexpr decltype(auto) operator-=(this auto && self, value_type _right)
-	{ self.value -= _right; return self; }
-	constexpr decltype(auto) operator*=(this auto && self, value_type _right)
-	{ self.value *= _right; return self; }
-	constexpr decltype(auto) operator/=(this auto && self, value_type _right)
-	{ self.value /= _right; return self; }
-	constexpr decltype(auto) operator%=(this auto && self, value_type _right)
-	{ self.value %= _right; return self; }
-	constexpr decltype(auto) operator&=(this auto && self, value_type _right)
-	{ self.value &= _right; return self; }
-	constexpr decltype(auto) operator|=(this auto && self, value_type _right)
-	{ self.value |= _right; return self; }
-	constexpr decltype(auto) operator^=(this auto && self, value_type _right)
-	{ self.value ^= _right; return self; }
-	constexpr decltype(auto) operator<<=(this auto && self, value_type _right)
-	{ self.value <<= _right; return self; }
-	constexpr decltype(auto) operator>>=(this auto && self, value_type _right)
-	{ self.value >>= _right; return self; }
-	constexpr decltype(auto) operator++(this auto && self)
-	{ ++self.value; return self; }
-	constexpr decltype(auto) operator++(this auto && self, int)
-	{ return basic_wrapped_int(self.value++); }
-	constexpr decltype(auto) operator--(this auto && self)
-	{ --self.value; return self; }
-	constexpr decltype(auto) operator--(this auto && self, int)
-	{ return basic_wrapped_int(self.value--); }
+
 };
-
-template <typename T, typename T2>
-struct in_data_t : public ref_pair<T, T2> {};
-struct in_t {
-	[[gnu::always_inline]]
-	constexpr auto operator()(auto && _a, auto && _b) const &
-	{ return in_data_t{MLibForward(_a), MLibForward(_b)}; }
-} in;
-template <typename T, typename T2>
-[[gnu::always_inline]]
-constexpr auto operator|(auto const & _value, in_data_t<T, T2> && _data)
-{ return _value >= _data.first && _value <= _data.second; }
-
-template <typename T, typename T2>
-struct out_data_t : public ref_pair<T, T2> {};
-struct out_t {
-	[[gnu::always_inline]]
-	constexpr auto operator()(auto && _a, auto && _b) const &
-	{ return out_data_t(MLibForward(_a), MLibForward(_b)); }
-} out;
-template <typename T, typename T2>
-[[gnu::always_inline]]
-constexpr auto operator|(auto const & _value, out_data_t<T, T2> && _data)
-{ return _value < _data.first || _value > _data.second; }
 
 constexpr auto to_ascii(int _value)
 { return _value & 0x7f; }
-constexpr wchar_t to_lower(wchar_t _value)
-{
-	if (_value | in('A', 'Z'))
-		_value += ('A' - 'a');
+constexpr wchar_t to_lower(wchar_t _value) {
+	if (_value | in('A', 'Z')) _value += ('A' - 'a');
 	return _value;
 }
-constexpr wchar_t to_upper(wchar_t _value)
-{
-	if (_value | in('a', 'z')) 
-	  _value += ('a' - 'A');
+constexpr wchar_t to_upper(wchar_t _value) {
+	if (_value | in('a', 'z')) _value += ('a' - 'A');
 	return _value;
 }
 constexpr bool is_alpha(int _value)

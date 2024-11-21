@@ -1,6 +1,6 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
 #ifndef MLib_Extras
-#define MLib_Extras 20241104L
+#define MLib_Extras 20241118L
 #include "exception.hpp"
 #include "macros/normal.hpp"
 
@@ -31,11 +31,11 @@ struct C {
 	constexpr C(double Val) : Val(Val) { check(); }
 	constexpr C(K Val) : Val(K2C(Val)) { check(); }
 	constexpr C(F Val) : Val(F2C(Val)) { check(); }
-	[[nodiscard, gnu::always_inline]]
+	[[nodiscard]] __forceinline
 	constexpr auto & operator*(this auto && self) { return self.Val; }
-	[[nodiscard, gnu::always_inline]]
+	[[nodiscard]] __forceinline
 	constexpr auto & unwrap(this auto && self) { return self.Val; }
-	[[nodiscard, gnu::always_inline]]
+	[[nodiscard]] __forceinline
 	constexpr operator double(this auto self) { return self.Val; }
 };
 struct K {
@@ -48,11 +48,11 @@ struct K {
 	constexpr K(double Val) : Val(Val) { check();	}
 	constexpr K(C Val) : Val(C2K(Val)) { check();	}
 	constexpr K(F Val) : Val(F2K(Val)) { check();	}
-	[[nodiscard, gnu::always_inline]]
+	[[nodiscard]] __forceinline
 	constexpr auto & operator*(this auto && self) { return self.Val; }
-	[[nodiscard, gnu::always_inline]]
+	[[nodiscard]] __forceinline
 	constexpr auto & unwrap(this auto && self) { return self.Val; }
-	[[nodiscard, gnu::always_inline]]
+	[[nodiscard]] __forceinline
 	constexpr operator double(this auto self) { return self.Val; }
 };
 struct F {
@@ -65,11 +65,11 @@ struct F {
 	constexpr F(double Val) : Val(Val) { check();	}
 	constexpr F(C Val) : Val(C2F(Val)) { check();	}
 	constexpr F(K Val) : Val(K2F(Val)) { check();	}
-	[[nodiscard, gnu::always_inline]]
+	[[nodiscard]] __forceinline
 	constexpr auto & operator*(this auto && self) { return self.Val; }
-	[[nodiscard, gnu::always_inline]]
+	[[nodiscard]] __forceinline
 	constexpr auto & unwrap(this auto && self) { return self.Val; }
-	[[nodiscard, gnu::always_inline]]
+	[[nodiscard]] __forceinline
 	constexpr operator double(this auto self) { return self.Val; }
 };
 

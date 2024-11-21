@@ -12,10 +12,10 @@ namespace mlib {
 
 struct format_args : public std::format_args {
   template <typename Context = ::std::format_context>
-  constexpr format_args(auto & ... _format_args) :
-    ::std::format_args(::std::make_format_args<Context>(MLibForward(_format_args)...)) {}
-  constexpr format_args(auto & ... _format_args) :
-    ::std::format_args(::std::make_format_args(MLibForward(_format_args)...)) {}
+  constexpr format_args(auto & ... _format_args)
+  : ::std::format_args(::std::make_format_args<Context>(MLibForward(_format_args)...)) {}
+  constexpr format_args(auto & ... _format_args)
+  : ::std::format_args(::std::make_format_args(MLibForward(_format_args)...)) {}
 };
 
 template <typename T>
@@ -26,8 +26,9 @@ struct format_string_holder {
   constexpr format_string_holder(value_type const * _ptr, ::std::size_t _size)
   : Str(_ptr, _size) {}
   
-  decltype(auto) operator()(this format_string_holder const & self, auto && ... _args)
-  { return ::std::vformat(self.Str, format_args(MLibForward(_args)...)); }
+  decltype(auto) operator()(this format_string_holder const & self, auto && ... _args) {
+    return ::std::vformat(self.Str, format_args(MLibForward(_args)...));
+  }
 
 };
 format_string_holder(char const *, ::std::size_t) -> format_string_holder<char>;

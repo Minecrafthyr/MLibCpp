@@ -2,3 +2,6 @@
 // Core Header
 #undef req
 #undef elif
+#undef pub
+#undef pro
+#undef pri

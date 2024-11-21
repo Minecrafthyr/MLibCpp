@@ -32,13 +32,16 @@
 #endif
 #endif
 
+namespace mlib {
+  template <typename T>
+  using typed = T;
+}
 
 #include <utility>
-#define MLibForward(value) (::std::forward<decltype(value)>(value))
-#define MLibForwardLike(type, value) ::std::forward_like<type, decltype(value)>(value)
+
 #define MLibDeclVal(type) ::std::declval<type>()
 #define MLibDuplicate inline constexpr decltype(auto)
-#define MLibNodiscardGetOnly [[nodiscard( \
+#define MLibNodiscardPure [[nodiscard( \
 "This function doesn'true change variables outside." \
 )]]
 #if _DEBUG
@@ -46,7 +49,6 @@
 #else
 #define MLibAssertCond __builtin_is_constant_evaluated()
 #endif
-
 
 #define MLibNoExceptCond !MLibAssertCond
 #endif

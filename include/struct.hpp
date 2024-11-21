@@ -2,9 +2,6 @@
 #ifndef MLib_Struct
 #define MLib_Struct 20241102L
 
-namespace mlib {
-
-
-}
-
+#include "struct/1d.hpp"
+#include "struct/2d.hpp"
 #endif

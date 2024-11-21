@@ -47,7 +47,7 @@ constexpr auto memcmp(const T * _a, const T * _b, ::std::size_t _sz) {
 
 #if __is_identifier(__builtin_memcpy)
 template <typename T>
-	requires (!::mlib::c_const<T>)
+	requires (!::mlib::Const<T>)
 /// @brief memory copy. copy `_b` into `_a`.
 [[gnu::always_inline]]
 constexpr void memcpy(T * _a, const T * _b, ::std::size_t _sz) {
@@ -64,7 +64,7 @@ constexpr void memcpy(::std::uint8_t * _a, const ::std::uint8_t * _b, ::std::siz
 	else { ::memcpy(_a, _b, _sz); }
 }
 template <typename T>
-	requires (!::mlib::c_const<T>)
+	requires (!::mlib::Const<T>)
 /// @brief memory copy. copy `_b` into `_a`.
 [[gnu::always_inline]]
 constexpr void memcpy(T * _a, const T * _b, ::std::size_t _sz) {
@@ -96,11 +96,11 @@ constexpr auto strlen(const char * _s) {
 #endif
 
 [[nodiscard, gnu::always_inline]]
-constexpr auto powf(flt _base, flt _power) { return ::__builtin_powf(_base, _power); }
+constexpr auto powf(float _base, float _power) { return ::__builtin_powf(_base, _power); }
 [[nodiscard, gnu::always_inline]]
-constexpr auto pow(dbl _base, dbl _power) { return ::__builtin_pow(_base, _power); }
+constexpr auto pow(double _base, double _power) { return ::__builtin_pow(_base, _power); }
 [[nodiscard, gnu::always_inline]]
-constexpr auto powl(ldbl _base, ldbl _power) { return ::__builtin_powl(_base, _power); }
+constexpr auto powl(long double _base, long double _power) { return ::__builtin_powl(_base, _power); }
 
 [[nodiscard, gnu::always_inline]]
 constexpr auto huge_valf() { return ::__builtin_huge_valf(); }
@@ -123,21 +123,21 @@ namespace mlib {
 namespace math {
 
 [[nodiscard, gnu::always_inline]]
-constexpr flt pow(flt _base, flt _power) { return ::builtin::powf(_base, _power); }
+constexpr float pow(float _base, float _power) { return ::builtin::powf(_base, _power); }
 [[nodiscard, gnu::always_inline]]
-constexpr dbl pow(dbl _base, dbl _power) { return ::builtin::pow(_base, _power); }
+constexpr double pow(double _base, double _power) { return ::builtin::pow(_base, _power); }
 [[nodiscard, gnu::always_inline]]
-constexpr ldbl pow(ldbl _base, ldbl _power) { return ::builtin::powl(_base, _power); }
+constexpr long double pow(long double _base, long double _power) { return ::builtin::powl(_base, _power); }
 
 constexpr struct {
-  constexpr operator flt() const { return ::builtin::huge_valf(); }
-  constexpr operator dbl() const { return ::builtin::huge_val(); }
-  constexpr operator ldbl() const { return ::builtin::huge_vall(); }
+  constexpr operator float() const { return ::builtin::huge_valf(); }
+  constexpr operator double() const { return ::builtin::huge_val(); }
+  constexpr operator long double() const { return ::builtin::huge_vall(); }
 } infinity_v;
 constexpr struct {
-  constexpr operator flt() const { return ::builtin::nanf("0"); }
-  constexpr operator dbl() const { return ::builtin::nan("0"); }
-  constexpr operator ldbl() const { return ::builtin::nanl("0"); }
+  constexpr operator float() const { return ::builtin::nanf("0"); }
+  constexpr operator double() const { return ::builtin::nan("0"); }
+  constexpr operator long double() const { return ::builtin::nanl("0"); }
 } nan_v;
 
 }

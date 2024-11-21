@@ -9,6 +9,7 @@
 #include <variant>
 
 #include "types.hpp"
+#include "ranges.hpp"
 
 
 namespace mlib {
@@ -77,7 +78,7 @@ struct range_from_data_and_size {
 	constexpr auto end(this auto && self) {
 		return self.data() + self.size();
 	}
-	constexpr auto operator[](this auto && self, c_int auto offset) {
+	constexpr auto operator[](this auto && self, Integral auto offset) {
 		return self.data()[offset];
 	}
 };
@@ -107,7 +108,6 @@ public:
 	constexpr sized_ptr(const InputType & input) :
 		Data(::std::ranges::data(input)), Size(::std::ranges::size(input)) {}
 
-
 	constexpr auto data(this auto && self) -> auto * {
 		return self.Data;
 	}
@@ -115,10 +115,10 @@ public:
 		return self.Size;
 	}
 	constexpr auto operator+(this const auto && self, ::std::intptr_t offset) {
-		return offset_sized_ptr_type(self.Data, self.Size, offset);
+		offset_sized_ptr_type(self.Data, self.Size, offset);
 	}
 	constexpr auto operator-(this const auto && self, ::std::intptr_t offset) {
-		return offset_sized_ptr_type(self.Data, self.Size, -offset);
+		offset_sized_ptr_type(self.Data, self.Size, -offset);
 	}
 
 
@@ -134,30 +134,18 @@ struct offset_sized_ptr : public range_from_data_and_size {
 private:
 	sized_ptr_type * SizedPtr;
 	offset_type Offset;
+	size_type Size;
 
 public:
-	constexpr auto data(this auto && self)
-	{ return self.Pointer + self.Offset; }
-	constexpr auto size(this const auto && self)
-	{ return self.Size; }
+	constexpr auto data(this auto && self) { return self.SizedPtr + self.Offset; }
+	constexpr auto size(this const auto && self) { return self.Size; }
 
-	constexpr auto here(this auto && self)
-	{ return self.Pointer; }
-
-	constexpr auto get_origin(this const auto && self) const
-	{ return sized_ptr_type(self.data(), self.Size); }
+	constexpr auto here(this auto && self) { return self.SizedPtr; }
+	constexpr auto get_origin(this const auto && self) const {
+		return sized_ptr_type(self.data(), self.Size);
+	}
 
 };
-
-class signed_union_int : public ::std::variant<::std::int8_t, ::std::int16_t, ::std::int32_t, ::std::int64_t>
-{
-
-};
-class unsigned_union_int : public ::std::variant<::std::uint8_t, ::std::uint16_t, ::std::uint32_t, ::std::uint64_t>
-{
-
-};
-
 
 }
 

@@ -15,10 +15,10 @@ public:
     struct { ::std::uint8_t r, g, b; };
   };
 
-  constexpr rgb(::std::array<::std::uint8_t, 3> array):
-    array(array) {}
-  constexpr rgb(::std::uint8_t r, ::std::uint8_t g, ::std::uint8_t b):
-    r(r), g(g), b(b) {}
+  constexpr rgb(::std::array<::std::uint8_t, 3> _array):
+    array(_array) {}
+  constexpr rgb(::std::uint8_t _r, ::std::uint8_t _g, ::std::uint8_t _b):
+    r(_r), g(_g), b(_b) {}
 
   constexpr operator ::std::array<::std::uint8_t, 3>() {
     return array;
@@ -37,12 +37,12 @@ public:
     struct { ::std::uint8_t r, g, b, a; };
   };
 
-  constexpr rgba(::std::int32_t color_int):
-    integer(color_int) {}
-  constexpr rgba(::std::array<::std::uint8_t, 4> array):
-    array(array) {}
-  constexpr rgba(::std::uint8_t r, ::std::uint8_t g, ::std::uint8_t b, ::std::uint8_t a):
-    r(r), g(g), b(b), a(a) {}
+  constexpr rgba(::std::int32_t _int):
+    integer(_int) {}
+  constexpr rgba(::std::array<::std::uint8_t, 4> _array):
+    array(_array) {}
+  constexpr rgba(::std::uint8_t _r, ::std::uint8_t _g, ::std::uint8_t _b, ::std::uint8_t _a):
+    r(_r), g(_g), b(_b), a(_a) {}
 
   constexpr operator ::std::array<::std::uint8_t, 4>() {
     return array;

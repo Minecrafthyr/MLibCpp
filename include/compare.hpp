@@ -12,12 +12,12 @@ concept c_3way_cmp_with = ::std::three_way_comparable_with<T, T2>;
 
 constexpr decltype(auto) synth3way(const auto & _t, const auto & _u)
 requires requires {
-  { _t < _u } -> c_boolean_testable;
-  { _u < _t } -> c_boolean_testable;
-}
-{
+  { _t < _u } -> BooleanTestable;
+  { _u < _t } -> BooleanTestable;
+} {
   using _ord = ::std::weak_ordering;
-  if constexpr (c_3way_cmp_with<decltype(_t), decltype(_u)>) return _t <=> _u;
+  if constexpr (c_3way_cmp_with<decltype(_t), decltype(_u)>)
+    return _t <=> _u;
   else return
   (_t < _u) ? _ord::less
   : (_u < _t) ? _ord::greater

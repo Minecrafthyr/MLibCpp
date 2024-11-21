@@ -5,7 +5,7 @@
 #include <optional>
 #include <chrono>
 
-#include "short_macros.hpp"
+#include "macros.hpp"
 
 namespace mlib {
 
@@ -40,7 +40,5 @@ inline struct {
 } random64;
 
 }
-
-#include "undef_short_macros.hpp"
 
 #endif
