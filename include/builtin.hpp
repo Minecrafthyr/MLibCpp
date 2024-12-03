@@ -4,9 +4,10 @@
 #include <cstdint>
 #include <string.h>
 #include <ranges>
+
+#include <D:/Projects/#Libraries/gcem-1.18.0/include/gcem.hpp>
 #include "types.hpp"
 #include "ranges.hpp"
-
 
 namespace builtin {
 
@@ -51,7 +52,7 @@ template <typename T>
 /// @brief memory copy. copy `_b` into `_a`.
 [[gnu::always_inline]]
 constexpr void memcpy(T * _a, const T * _b, ::std::size_t _sz) {
-	::__builtin_memcpy(_a, _b, _sz * sizeof(Type));
+	::__builtin_memcpy(_a, _b, _sz * sizeof(T));
 }
 #else
 /// @brief memory copy. copy `_b` into `_a`.
@@ -72,8 +73,8 @@ constexpr void memcpy(T * _a, const T * _b, ::std::size_t _sz) {
 }
 #endif
 template <typename T> requires requires {
-	::mlib::data(MLibDeclVal(const T &));
-	::mlib::size(MLibDeclVal(const T &)); }
+	::mlib::data(DeclVal(const T &));
+	::mlib::size(DeclVal(const T &)); }
 /// @brief memory copy. copy `_b` into `_a`.
 [[gnu::always_inline]]
 constexpr void memcpy(T & _a, const T & _b) { 
@@ -96,11 +97,12 @@ constexpr auto strlen(const char * _s) {
 #endif
 
 [[nodiscard, gnu::always_inline]]
-constexpr auto powf(float _base, float _power) { return ::__builtin_powf(_base, _power); }
+auto powf(float _base, float _power) { return __builtin_powf(_base, _power); }
+
 [[nodiscard, gnu::always_inline]]
-constexpr auto pow(double _base, double _power) { return ::__builtin_pow(_base, _power); }
+auto pow(double _base, double _power) { return __builtin_pow(_base, _power); }
 [[nodiscard, gnu::always_inline]]
-constexpr auto powl(long double _base, long double _power) { return ::__builtin_powl(_base, _power); }
+auto powl(long double _base, long double _power) { return __builtin_powl(_base, _power); }
 
 [[nodiscard, gnu::always_inline]]
 constexpr auto huge_valf() { return ::__builtin_huge_valf(); }
@@ -110,11 +112,11 @@ constexpr auto huge_val() { return ::__builtin_huge_val(); }
 constexpr auto huge_vall() { return ::__builtin_huge_vall(); }
 
 [[nodiscard, gnu::always_inline]]
-constexpr auto nanf(const char * _ch) { return ::__builtin_nanf(_ch); }
+auto nanf(const char * _ch) { return ::__builtin_nanf(_ch); }
 [[nodiscard, gnu::always_inline]]
-constexpr auto nan(const char * _ch) { return ::__builtin_nan(_ch); }
+auto nan(const char * _ch) { return ::__builtin_nan(_ch); }
 [[nodiscard, gnu::always_inline]]
-constexpr auto nanl(const char * _ch) { return ::__builtin_nanl(_ch); }
+auto nanl(const char * _ch) { return ::__builtin_nanl(_ch); }
 
 }
 
@@ -122,12 +124,16 @@ namespace mlib {
 
 namespace math {
 
+
 [[nodiscard, gnu::always_inline]]
-constexpr float pow(float _base, float _power) { return ::builtin::powf(_base, _power); }
+consteval auto pow(::std::floating_point auto _base, ::std::floating_point auto _power)
+{ return ::gcem::pow(_base, _power); }
 [[nodiscard, gnu::always_inline]]
-constexpr double pow(double _base, double _power) { return ::builtin::pow(_base, _power); }
+float pow(float _base, float _power) { return ::builtin::powf(_base, _power); }
 [[nodiscard, gnu::always_inline]]
-constexpr long double pow(long double _base, long double _power) { return ::builtin::powl(_base, _power); }
+double pow(double _base, double _power) { return ::builtin::pow(_base, _power); }
+[[nodiscard, gnu::always_inline]]
+long double pow(long double _base, long double _power) { return ::builtin::powl(_base, _power); }
 
 constexpr struct {
   constexpr operator float() const { return ::builtin::huge_valf(); }
@@ -135,9 +141,9 @@ constexpr struct {
   constexpr operator long double() const { return ::builtin::huge_vall(); }
 } infinity_v;
 constexpr struct {
-  constexpr operator float() const { return ::builtin::nanf("0"); }
-  constexpr operator double() const { return ::builtin::nan("0"); }
-  constexpr operator long double() const { return ::builtin::nanl("0"); }
+  operator float() const { return ::builtin::nanf("0"); }
+  operator double() const { return ::builtin::nan("0"); }
+  operator long double() const { return ::builtin::nanl("0"); }
 } nan_v;
 
 }

@@ -1,7 +1,7 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
 // Core Header
 #ifndef MLib_TypeUtils
-#define MLib_TypeUtils 20241107L
+#define MLib_TypeUtils 20241121L
 
 #include <cstdint>
 #include <array>
@@ -14,22 +14,24 @@ namespace mlib {
 #pragma region No Requirements
 
 template <typename T>
-MLibDuplicate static_size = ::std::tuple_size_v<T>;
+using typed = T;
+template <typename T>
+inline constexpr decltype(auto) static_size = ::std::tuple_size_v<T>;
 
 template <typename T>
 concept Const = ::std::is_const_v<T>;
 template <typename T>
 concept Volatile = ::std::is_volatile_v<T>;
 template <typename T>
-concept LRef = ::std::is_lvalue_reference_v<T>;
+concept LValueReference = ::std::is_lvalue_reference_v<T>;
 template <typename T>
-concept RRef = ::std::is_rvalue_reference_v<T>;
+concept RValueReference = ::std::is_rvalue_reference_v<T>;
 template <typename T>
-concept Ptr = ::std::is_pointer_v<T>;
+concept Pointer = ::std::is_pointer_v<T>;
 template <typename T>
 concept BuiltinArray = ::std::is_array_v<T>;
 template <typename T>
-concept Ref = ::std::is_reference_v<T>;
+concept Reference = ::std::is_reference_v<T>;
 template <typename T>
 concept Function = ::std::is_function_v<T>;
 template <typename T>
@@ -49,33 +51,23 @@ concept SameAs = (::std::same_as<T, T2> || ...);
 template <typename T, template <typename> typename ApplyT, typename ... T2>
 concept SameAsApply = (::std::same_as<ApplyT<T>, T2> || ...);
 
-using ::std::remove_const_t;
-using ::std::remove_volatile_t;
-template <typename T>
-using remove_ref_t = remove_reference_t<T>;
-using ::std::remove_cv_t;
-using ::std::remove_cvref_t;
-
 #pragma region Requires
 template <typename T, typename ... T2>
 concept Constructible = requires (T2 && ... _v) { T(_v...); };
 template <typename T>
-concept CopyConstructible = requires(const T & _v) { T(_v); };
+concept CopyConstructible = requires(T const& _v) { T(_v); };
 template <typename T>
 concept MoveConstructible = requires(T && _v) { T(_v); };
 
 template <typename T, typename ... T2>
 concept NothrowConstructible = requires (T2 && ... _v) { {T(_v...)}noexcept; };
 template <typename T>
-concept NothrowCopyConstructible = requires(const T & _v) { {T(_v)}noexcept; };
+concept NothrowCopyConstructible = requires(T const& _v) { {T(_v)}noexcept; };
 template <typename T>
 concept NothrowMoveConstructible = requires(T && _v) { {T(_v)}noexcept; };
 
 template <typename T>
-concept ImplicitlyDefaultConstructible = requires(void(*_f)(T)) { _f({}); };
-
-template <typename T, typename T2>
-concept ConvertibleTo = requires(T _v) { static_cast<T2>(_v); };
+concept ImplicitlyConstructible = requires(void(*_f)(T)) { _f({}); };
 
 template <typename T, typename T2 = T>
 concept Swappable = ::std::swappable_with<T, T2>;
@@ -99,8 +91,8 @@ using ::std::conditional_t;
 
 template <typename RefT, typename ToT>
 using transfer_ref_t = 
-conditional_t<LRef<RefT>, ToT &,
-conditional_t<RRef<RefT>, remove_ref_t<ToT> &&, ToT>>;
+conditional_t<LValueReference<RefT>, ToT &,
+conditional_t<RValueReference<RefT>, ::std::remove_reference_t<ToT> &&, ToT>>;
 
 
 namespace _ {
@@ -120,40 +112,40 @@ concept Specialization = _::is_specialization_v<T, Tp>;
 
 template <typename ToT, typename FromT>
 constexpr decltype(auto) smart_cast(FromT && _value) {
-  if constexpr (LRef<ToT> && Ptr<FromT>)
-    return *(remove_ref_t<ToT> *)_value;
+  if constexpr (LValueReference<ToT> && Pointer<FromT>)
+    return *(::std::remove_reference_t<ToT> *)_value;
   else return (ToT)_value;
 }
 
 template <typename T>
-concept BooleanTestable = ConvertibleTo<T, bool> &&
-  requires(T && _v) { { !_v } -> ConvertibleTo<bool>; };
+concept BooleanTestable = ::std::convertible_to<T, bool> &&
+  requires(T && _v) { { !_v } -> ::std::convertible_to<bool>; };
 
 template <typename T, typename T2>
-concept RemoveCVSameAs = SameAs<remove_cv_t<T>, T2>;
+concept SameAsRemoveCV = SameAs<::std::remove_cv_t<T>, T2>;
 template <typename T, typename T2>
-concept RemoveRefSameAs = SameAs<remove_ref_t<T>, T2>;
+concept SameAsRemoveRef = SameAs<::std::remove_reference_t<T>, T2>;
 template <typename T, typename T2>
-concept RemoveCVRefSameAs = SameAs<remove_cvref_t<T>, T2>;
+concept SameAsRemoveCVRef = SameAs<::std::remove_cvref_t<T>, T2>;
 
 template <typename T>
-concept Void = RemoveCVSameAs<T, void>;
+concept Void = SameAsRemoveCV<T, void>;
 
 template <typename T>
-concept ConstLRef = Const<T> && LRef<T>;
+concept ConstLValueReference = Const<T> && LValueReference<T>;
 template <typename T>
-concept ConstRRef = Const<T> && RRef<T>;
+concept ConstRValueReference = Const<T> && RValueReference<T>;
 template <typename T>
-concept ConstRef = Const<T> && Ref<T>;
+concept ConstReference = Const<T> && Reference<T>;
 
 template <typename T>
-concept Destructible = requires(T & _v) { { _v.~T() } noexcept; } || Ref<T> || BuiltinArray<T>;
+concept Destructible = requires(T & _v) { { _v.~T() } noexcept; } || Reference<T> || BuiltinArray<T>;
 
 template <typename T>
-concept Object = not (Function<T> || Ref<T> || Void<T>);
+concept Object = not (Function<T> || Reference<T> || Void<T>);
 
-#define MLibForward(value) ((decltype(value) &&)(value))
-#define MLibForwardLike(type, value) ((::mlib::typed<type> &&)(value))
+#define Forward(...) (decltype(__VA_ARGS__) &&)(__VA_ARGS__)
+#define ForwardLike(...) (::mlib::typed<__VA_ARGS__> &&)
 /// @brief Transfer reference of `type` to object type of `value`.
 #define MLibForwardTransfer(type, value) ((::mlib::transfer_ref_t<type, decltype(value)> &&)(value))
 

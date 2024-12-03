@@ -12,17 +12,20 @@
 namespace mlib {
 
 template <FloatingPoint T>
-auto from_chars(char const* _begin, char const* _end, ::std::chars_format _format = ::std::chars_format::general)
-{
+auto from_chars
+(char const* _begin, char const* _end,
+	::std::chars_format _format = ::std::chars_format::general) {
 	T && _result{};
 	auto [_ptr, _errc] = ::std::from_chars(_begin, _end, _result, _format);
 	if (_errc != ::std::errc{}) throw system_error(_errc);
 	return _result;
 }
 template <FloatingPoint T>
-auto from_chars(ranges::random_access_range auto const& _range, ::std::chars_format fmt = ::std::chars_format::general)
-requires(ConvertibleTo<decltype(begin(_range)), char const*>
-&& ConvertibleTo<decltype(end(_range) - 1), char const*>)
+auto from_chars
+(ranges::random_access_range auto const& _range,
+	::std::chars_format fmt = ::std::chars_format::general)
+requires(::std::convertible_to<decltype(begin(_range)), char const*>
+&& ::std::convertible_to<decltype(end(_range) - 1), char const*>)
 { return from_chars<T>(begin(_range), end(_range) - 1, fmt); }
 
 template <Integral T>
@@ -34,32 +37,31 @@ auto from_chars(char const* _begin, char const* _end, int _base = 10) {
 }
 template <Integral T>
 auto from_chars(ranges::random_access_range auto const & _range, int _base = 10)
-requires(ConvertibleTo<decltype(begin(_range)), char const*>
-&& ConvertibleTo<decltype(end(_range) - 1), char const*>)
+requires(::std::convertible_to<decltype(begin(_range)), char const*>
+&& ::std::convertible_to<decltype(end(_range) - 1), char const*>)
 { return from_chars<T>(begin(_range), end(_range) - 1, _base); }
 
 template <Integral T>
-class basic_wrapped_int
-{
+class basic_wrapped_int {
 public:
 	using value_type = T;
 
-	static constexpr bool is_signed_v{~value_type() < value_type()};
-	static constexpr value_type min_v{
-		is_signed_v ? (value_type(1) << (sizeof(value_type) * 8 - 1)) : 0},
-		max_v{~min_v};
+	static constexpr bool IsSigned{~value_type() < value_type()};
+	static constexpr value_type Min{
+		IsSigned ? (value_type(1) << (sizeof(value_type) * 8 - 1)) : 0},
+		max_v{~Min};
 
-	value_type value;
-	constexpr basic_wrapped_int(value_type _value) : value(_value) {}
+	value_type Value;
+	constexpr basic_wrapped_int(value_type _value) : Value(_value) {}
 
 	static constexpr auto from(char * _first, char * _last, int _base = 10)
 	{ return (basic_wrapped_int)from_chars<value_type>(_first, _last, _base); }
 	static constexpr auto from(::std::string_view _str, int _base = 10)
 	{ return (basic_wrapped_int)from_chars<value_type>(_str, _base); }
-	constexpr decltype(auto) unwrap(this auto && self) { return MLibForward(self.value); }
+	constexpr decltype(auto) unwrap(this auto && self) { return Forward(self.value); }
 
 	constexpr auto to_string(this basic_wrapped_int self)
-	{ return ::std::to_string(self.value); }
+	{ return ::std::to_string(self.Value); }
 	constexpr operator ::std::string(this basic_wrapped_int self)
 	{ return self.to_string(); }
 
@@ -67,6 +69,7 @@ public:
 
 constexpr auto to_ascii(int _value)
 { return _value & 0x7f; }
+
 constexpr wchar_t to_lower(wchar_t _value) {
 	if (_value | in('A', 'Z')) _value += ('A' - 'a');
 	return _value;
@@ -75,6 +78,7 @@ constexpr wchar_t to_upper(wchar_t _value) {
 	if (_value | in('a', 'z')) _value += ('a' - 'A');
 	return _value;
 }
+
 constexpr bool is_alpha(int _value)
 { return _value | in('a', 'z') || _value | in('A', 'Z'); }
 constexpr bool is_digit(int _value)
@@ -107,26 +111,26 @@ struct wrapped_wchar {
 	{ return self.value; }
 
 	constexpr decltype(auto) to_ascii(this auto && self)
-	{ self = to_ascii(self.value); return self; }
+	{ self = ::mlib::to_ascii(self.value); return Forward(self); }
 	constexpr decltype(auto) to_lower(this auto && self)
-	{ self = to_lower(self.value); return self; }
+	{ self = ::mlib::to_lower(self.value); return Forward(self); }
 	constexpr decltype(auto) to_upper(this auto && self)
-	{ self = to_upper(self.value); return self; }
+	{ self = ::mlib::to_upper(self.value); return Forward(self); }
 
-	constexpr bool is_alpha(this auto self) { return is_alpha(self.value); }
-	constexpr bool is_digit(this auto self) { return is_digit(self.value); }
+	constexpr bool is_alpha(this auto self) { return ::mlib::is_alpha(self.value); }
+	constexpr bool is_digit(this auto self) { return ::mlib::is_digit(self.value); }
 };
 
-struct wr_float {
+struct wrapped_float {
 	union {
 		float float_v;
-		struct bits {
+		struct {
 			::std::uint32_t fraction_v : 23, exponent_v : 8, sign_v : 1;
 		} bits_v;
 	};
-	constexpr wr_float(float _float) : float_v(_float) {}
+	constexpr wrapped_float(float _float) : float_v(_float) {}
 
-	constexpr wr_float operator^(this wr_float self, wr_float _right)
+	constexpr wrapped_float operator^(this wrapped_float self, wrapped_float _right)
 	{ return builtin::powf(self.float_v, _right.float_v); }
 
 	constexpr ::std::uint32_t fraction() const noexcept { return bits_v.fraction_v; }
@@ -134,14 +138,14 @@ struct wr_float {
 	constexpr bool sign() const noexcept { return bits_v.sign_v; }
 };
 
-using wr_int8 = basic_wrapped_int<::int8_t>;
-using wr_uint8 = basic_wrapped_int<::uint8_t>;
-using wr_int16 = basic_wrapped_int<::int16_t>;
-using wr_uint16 = basic_wrapped_int<::uint16_t>;
-using wr_int32 = basic_wrapped_int<::int32_t>;
-using wr_uint32 = basic_wrapped_int<::uint32_t>;
-using wr_int64 = basic_wrapped_int<::int64_t>;
-using wr_uint64 = basic_wrapped_int<::uint64_t>;
+using wrapped_int8 = basic_wrapped_int<::std::int8_t>;
+using wrapped_uint8 = basic_wrapped_int<::std::uint8_t>;
+using wrapped_int16 = basic_wrapped_int<::std::int16_t>;
+using wrapped_uint16 = basic_wrapped_int<::std::uint16_t>;
+using wrapped_int32 = basic_wrapped_int<::std::int32_t>;
+using wrapped_uint32 = basic_wrapped_int<::std::uint32_t>;
+using wrapped_int64 = basic_wrapped_int<::std::int64_t>;
+using wrapped_uint64 = basic_wrapped_int<::std::uint64_t>;
 
 }
 

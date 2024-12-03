@@ -41,7 +41,7 @@ struct attribute {
 		};
 		using map_type::empty;
 		[[nodiscard]] decltype(auto) operator[](auto && ... _value) const &
-		{ return operator[](MLibForward(_value)...) };
+		{ return operator[](Forward(_value)...); };
 		[[nodiscard]] auto begin() { return cbegin(); }
 		[[nodiscard]] auto end() { return cend(); }
 		successful set_value(const std::string_view & _key, attribute::value_type _value) {
@@ -70,7 +70,7 @@ struct attribute {
 			
 		bool add(auto && ... _input)
 		requires requires { value_type{::std::forward<decltype(_input)>(_input)...}; } {
-			if (insert(MLibForward(_input)...).second)
+			if (insert(Forward(_input)...).second)
 			{ IsChanged = true; return true;}
 			else return false;
 		}

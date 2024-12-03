@@ -2,6 +2,5 @@
 // Core Header
 #undef req
 #undef elif
-#undef pub
-#undef pro
-#undef pri
+#undef perfect_auto
+#undef op

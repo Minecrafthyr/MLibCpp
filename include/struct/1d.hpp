@@ -16,19 +16,19 @@ struct vector2 {
 		struct { value_type X, Y; };
 	};
 		
-	constexpr vector2(auto && input)
-	requires(::std::tuple_size_v<decltype(input)> == 2)
-	: X(::std::get<0>(MLibForward(input))),
-		Y(::std::get<1>(MLibForward(input))) {}
+	constexpr vector2(auto && _input)
+	requires(::std::tuple_size_v<decltype(_input)> == 2)
+	: X(::std::get<0>(::std::forward<decltype(_input)>(_input))),
+		Y(::std::get<1>(::std::forward<decltype(_input)>(_input))) {}
 
-	constexpr vector2(ConvertibleTo<value_type> auto && _x, ConvertibleTo<value_type> auto && _y)
+	constexpr vector2(::std::convertible_to<value_type> auto && _x, ::std::convertible_to<value_type> auto && _y)
 	: X(_x), Y(_y) {}
 
 };
 
 template <typename T>
 requires (::std::tuple_size_v<T> == 2)
-vector2(T const &) -> vector2<decltype(::std::get<0>(MLibDeclVal(T)))>;
+vector2(T const &) -> vector2<decltype(::std::get<0>(DeclVal(T)))>;
 template <class T>
 vector2(T &&, T &&) -> vector2<T>;
 

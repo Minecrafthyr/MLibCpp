@@ -1,18 +1,23 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
 // Core Header
 #ifndef MLib_Macros_Normal
-#define MLib_Macros_Normal 20241112L
+#define MLib_Macros_Normal 20241202
+#include <utility>
 
 #ifdef min
 #undef min
 #endif
-
 #ifdef max
 #undef max
 #endif
+#ifdef type
+#undef type
+#endif
+#ifdef value
+#undef value
+#endif
 
 #ifndef offsetof
-#include <cstdint>
 #define offsetof(type, member) (reinterpret_cast<::std::size_t>(&static_cast<type *>(nullptr)->member))
 #endif
 
@@ -32,18 +37,14 @@
 #endif
 #endif
 
-namespace mlib {
-  template <typename T>
-  using typed = T;
-}
 
-#include <utility>
+#define DeclVal(...) ::std::declval<__VA_ARGS__>()
+#define Forward(...) ::std::forward<decltype(__VA_ARGS__) &&>(__VA_ARGS__)
 
-#define MLibDeclVal(type) ::std::declval<type>()
-#define MLibDuplicate inline constexpr decltype(auto)
-#define MLibNodiscardPure [[nodiscard( \
+#define NodiscardPure [[nodiscard( \
 "This function doesn'true change variables outside." \
 )]]
+
 #if _DEBUG
 #define MLibAssertCond true
 #else

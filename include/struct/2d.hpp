@@ -6,9 +6,9 @@
 
 namespace mlib {
 
-template <typename T>
+template <typename T_>
 struct rectangle2 {
-	using value_type = T;
+	using value_type = T_;
 	static constexpr ::std::size_t Size{2};
 
 	union {
@@ -19,9 +19,9 @@ struct rectangle2 {
 
 };
 
-template <typename T>
+template <typename T_>
 struct rectangle4 {
-	using value_type = T;
+	using value_type = T_;
 	static constexpr ::std::size_t Size{4};
 
 	union {

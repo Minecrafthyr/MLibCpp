@@ -1,11 +1,11 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
 #ifndef MLib_Any
 #define MLib_Any 20241108L
-
 #include <bit>
 #include <typeindex>
 #include <utility>
 #include <stdexcept>
+
 #include "optional.hpp"
 #include "types.hpp"
 #include "pair.hpp"
@@ -39,22 +39,22 @@ struct any {
 	template <typename T>
 	any(T & _value) noexcept
 	: ValuePtr((void *)::std::addressof(_value)),
-		TypeSize(sizeof(remove_ref_t<T>)),
-		TypeIndex(typeid(remove_cvref_t<T>)),
-		IsVolatile(Volatile<remove_ref_t<T>>),
-		IsConst(Const<remove_ref_t<T>>) {}
+		TypeIndex(typeid(::std::remove_cvref_t<T>)),
+		TypeSize(sizeof(::std::remove_reference_t<T>)),
+		IsVolatile(Volatile<::std::remove_reference_t<T>>),
+		IsConst(Const<::std::remove_reference_t<T>>) {}
 	template <typename T>
 	any(T && _value) noexcept requires (MoveConstructible<T>)
-	: ValuePtr(new T(MLibForward(_value))),
-		TypeSize(sizeof(remove_ref_t<T>)),
-		TypeIndex(typeid(remove_cvref_t<T>)),
-		IsVolatile(Volatile<remove_ref_t<T>>),
-		IsConst(Const<remove_ref_t<T>>) {}
+	: ValuePtr(new T(Forward(_value))),
+		TypeIndex(typeid(::std::remove_cvref_t<T>)),
+		TypeSize(sizeof(::std::remove_reference_t<T>)),
+		IsVolatile(Volatile<::std::remove_reference_t<T>>),
+		IsConst(Const<::std::remove_reference_t<T>>) {}
 	template <typename T>
 	any(T * _value) noexcept
 	: ValuePtr((void *)_value),
+		TypeIndex(typeid(::std::remove_cv_t<T>)),
 		TypeSize(sizeof(T)),
-		TypeIndex(typeid(remove_cv_t<T>)),
 		IsVolatile(Volatile<T>),
 		IsConst(Const<T>) {}
 
@@ -73,9 +73,9 @@ struct any {
 		using _err = ::std::runtime_error;
 		if (typeid(T) != TypeIndex)
 			throw _err("hyr::any: index not same");
-		if (IsVolatile && !Volatile<remove_ref_t<T>>)
+		if (IsVolatile && !Volatile<::std::remove_reference_t<T>>)
 			throw _err("hyr::any: discard volatile");
-		if (IsConst && !Const<remove_ref_t<T>>)
+		if (IsConst && !Const<::std::remove_reference_t<T>>)
 			throw _err("hyr::any: discard const");
 		return *(T *)ValuePtr;
 	}

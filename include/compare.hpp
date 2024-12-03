@@ -7,8 +7,8 @@
 
 namespace mlib {
 
-template <typename T, typename T2>
-concept c_3way_cmp_with = ::std::three_way_comparable_with<T, T2>;
+template <typename T, typename T2 = T>
+concept ThreeWayComparable = ::std::three_way_comparable_with<T, T2>;
 
 constexpr decltype(auto) synth3way(const auto & _t, const auto & _u)
 requires requires {
@@ -16,12 +16,16 @@ requires requires {
   { _u < _t } -> BooleanTestable;
 } {
   using _ord = ::std::weak_ordering;
-  if constexpr (c_3way_cmp_with<decltype(_t), decltype(_u)>)
-    return _t <=> _u;
-  else return
-  (_t < _u) ? _ord::less
-  : (_u < _t) ? _ord::greater
-  : _ord::equivalent;
+if constexpr (ThreeWayComparable<decltype(_t), decltype(_u)>)
+  return _t <=> _u;
+else {
+  return
+    (_t < _u)
+    ? _ord::less
+    : (_u < _t)
+      ? _ord::greater
+      : _ord::equivalent;
+  }
 }
 
 }

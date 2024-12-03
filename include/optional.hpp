@@ -21,8 +21,8 @@ struct optional_base {
 	[[nodiscard]]
 	constexpr decltype(auto) operator*(this auto && self) { return self.get(); }
 	[[nodiscard]]
-	constexpr decltype(auto) value_or(this auto && self, const value_type & _v = {}) {
-		return has_value() ? self.get() : _v;
+	constexpr decltype(auto) value_or(this auto && self, value_type const& _v = {}) {
+		return self.has_value() ? self.get() : _v;
 	}
 };
 
@@ -38,9 +38,9 @@ struct optional : public optional_base<T> {
 	constexpr optional(::std::nullopt_t) : Unused{} {}
 	constexpr optional()
 	noexcept(NothrowConstructible<value_type>) : Value{} {}
-	constexpr optional(auto && ... In)
-	noexcept(noexcept(Value(MLibForward(In)...)))
-		: Value(MLibForward(In)...), HasVal(true) {}
+	constexpr optional(auto && ... _input)
+	noexcept(noexcept(Value(Forward(_input)...)))
+		: Value(Forward(_input)...), HasVal(true) {}
 	
 	[[nodiscard, gnu::always_inline]]
 	constexpr bool has_value(this auto && self) { return self.HasVal; };
@@ -58,14 +58,43 @@ struct as_optional : public optional_base<T> {
 	constexpr as_optional()
 	noexcept(NothrowConstructible<value_type>) : Value{} {}
 	constexpr as_optional(::std::nullopt_t) : Value() {}
-	constexpr as_optional(auto && ... In)
-	noexcept(noexcept(Value(MLibForward(In)...)))
-	: Value(MLibForward(In)...) {}
+	constexpr as_optional(auto && ... _input)
+	noexcept(noexcept(Value(Forward(_input)...)))
+	: Value(Forward(_input)...) {}
 	
 	[[nodiscard]]
 	constexpr bool has_value(this auto && self) { return self.Value != self.NullValue; };
 	[[nodiscard, gnu::always_inline]]
 	constexpr decltype(auto) get(this auto && self) { return self.Value; };
+};
+
+template <Object T>
+struct zero_optional : public optional_base<T> {
+	using value_type = T;
+	static constexpr ::std::size_t Size = sizeof(value_type);
+	using array_type = ::std::uint8_t[Size];
+	static constexpr array_type NullValue{};
+
+	union {
+		value_type Value;
+		array_type Unused;
+	};
+
+	constexpr zero_optional(::std::nullopt_t) : Unused() {}
+	constexpr zero_optional() : Value() {}
+	constexpr zero_optional(auto && ... _input)
+	: Value(::std::forward<decltype(_input)>(_input)...) {}
+	
+	[[nodiscard]] __forceinline
+	constexpr auto has_value(this auto const&& self) {
+		return memory_compare_range(self.Unused, self.NullValue);
+	};
+	[[nodiscard]] __forceinline
+	constexpr decltype(auto) get_value(this auto && self) {
+		if (not self.has_value())
+			throw "NewStd::Optional::get_value(self) throw because value is nullopt.";
+		return self.Value;
+	};
 };
 
 template <Object T>

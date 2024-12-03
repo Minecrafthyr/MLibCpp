@@ -17,17 +17,14 @@ namespace mlib {
 
 template <typename T>
 struct ref_ptr {
-	union {
-		T & Ref;
-		T * Ptr;
-	};
+	T * Ptr;
+	
 	constexpr ref_ptr(T & _ref) :
-		Ref(_ref) {}
+		Ptr(&_ref) {}
 	constexpr ref_ptr(T * _ptr) :
 		Ptr(_ptr) {}
-	constexpr decltype(auto) operator*(this auto && self) {
-		return self.Ref;
-	}
+	constexpr T & ref() { return Ptr; }
+	constexpr T & operator*(this auto && self) { return self.Ref; }
 };
 
 
@@ -129,7 +126,7 @@ struct offset_sized_ptr : public range_from_data_and_size {
 	using data_type = T;
 	using size_type = SizeT;
 	using offset_type = ::std::make_signed_t<SizeT>;
-	using sized_ptr_type = sized_ptr_type<data_type, size_type>;
+	using sized_ptr_type = sized_ptr<data_type, size_type>;
 
 private:
 	sized_ptr_type * SizedPtr;
@@ -141,7 +138,7 @@ public:
 	constexpr auto size(this const auto && self) { return self.Size; }
 
 	constexpr auto here(this auto && self) { return self.SizedPtr; }
-	constexpr auto get_origin(this const auto && self) const {
+	constexpr auto get_origin(this const auto && self) {
 		return sized_ptr_type(self.data(), self.Size);
 	}
 

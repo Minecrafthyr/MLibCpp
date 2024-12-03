@@ -13,9 +13,9 @@ namespace mlib {
 struct format_args : public std::format_args {
   template <typename Context = ::std::format_context>
   constexpr format_args(auto & ... _format_args)
-  : ::std::format_args(::std::make_format_args<Context>(MLibForward(_format_args)...)) {}
+  : ::std::format_args(::std::make_format_args<Context>(Forward(_format_args)...)) {}
   constexpr format_args(auto & ... _format_args)
-  : ::std::format_args(::std::make_format_args(MLibForward(_format_args)...)) {}
+  : ::std::format_args(::std::make_format_args(Forward(_format_args)...)) {}
 };
 
 template <typename T>
@@ -27,7 +27,7 @@ struct format_string_holder {
   : Str(_ptr, _size) {}
   
   decltype(auto) operator()(this format_string_holder const & self, auto && ... _args) {
-    return ::std::vformat(self.Str, format_args(MLibForward(_args)...));
+    return ::std::vformat(self.Str, format_args(Forward(_args)...));
   }
 
 };

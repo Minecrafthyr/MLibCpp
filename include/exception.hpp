@@ -1,24 +1,24 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
 // Core Header
-#ifndef MLib_Data 20241112L
-#define MLib_Data
+#ifndef MLib_Data
+#define MLib_Data 20241201
 #include <stdexcept>
 #include <system_error>
 
 namespace mlib {
 
 struct error_code : public ::std::error_code {
-  constexpr error_code(auto Input)
-  : ::std::error_code(::std::make_error_code(Input)) {}
-  constexpr error_code(auto && ... Input)
-  : ::std::error_code(MLibForward(Input)...) {}
+  error_code(auto _input)
+  : ::std::error_code(::std::make_error_code(_input)) {}
+  error_code(auto && ... _input)
+  : ::std::error_code(::std::forward<decltype(_input)>(_input)...) {}
 };
 
 struct system_error : public ::std::system_error {
-  constexpr system_error(error_code ErrorCode)
-  : ::std::system_error(ErrorCode) {}
-  constexpr system_error(auto && ... Input)
-  : ::std::system_error(MLibForward(Input)...) {}
+  system_error(error_code _errc)
+  : ::std::system_error(_errc) {}
+  system_error(auto && ... _input)
+  : ::std::system_error(::std::forward<decltype(_input)>(_input)...) {}
 };
 
 
