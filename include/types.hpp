@@ -1,7 +1,7 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
 // Core Header
-#ifndef MLib_TypeUtils
-#define MLib_TypeUtils 20241121L
+#ifndef MLibHeader_TypeUtilsHpp
+#define MLibHeader_TypeUtilsHpp 20241121
 
 #include <cstdint>
 #include <array>
@@ -72,6 +72,9 @@ concept ImplicitlyConstructible = requires(void(*_f)(T)) { _f({}); };
 template <typename T, typename T2 = T>
 concept Swappable = ::std::swappable_with<T, T2>;
 
+template <typename T, typename T2 = T>
+concept NothrowSwappable = noexcept(Swappable<T, T2>);
+
 template <typename T>
 concept Iterator = requires(T _v) { *_v; } && (requires(T _v) { ++_v; } || requires(T _v) { --_v; });
 template <typename T>
@@ -141,6 +144,7 @@ concept ConstReference = Const<T> && Reference<T>;
 template <typename T>
 concept Destructible = requires(T & _v) { { _v.~T() } noexcept; } || Reference<T> || BuiltinArray<T>;
 
+
 template <typename T>
 concept Object = not (Function<T> || Reference<T> || Void<T>);
 
@@ -151,8 +155,6 @@ concept Object = not (Function<T> || Reference<T> || Void<T>);
 
 #pragma endregion
 
-
 }
-
 
 #endif

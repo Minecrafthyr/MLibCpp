@@ -1,13 +1,12 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
-#ifndef MLib_Ranges
-#define MLib_Ranges 20241121L
+#ifndef MLibHeader_RangesHpp
+#define MLibHeader_RangesHpp 20241121
 
 #include <ranges>
 #include "types.hpp"
 #include "pair.hpp"
 
-namespace mlib
-{
+namespace mlib {
 namespace ranges = ::std::ranges;
 namespace views = ::std::views;
 
@@ -155,15 +154,6 @@ template <typename T>
 range(T &) -> range<T &>;
 template <typename T>
 range(T &&) -> range<T &&>;
-
-
-template <typename T, T MinValue, typename Fn>
-struct limited_min {
-  using value_type = T;
-
-
-};
-
 
 }
 

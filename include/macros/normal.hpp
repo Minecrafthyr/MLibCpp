@@ -1,7 +1,7 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
 // Core Header
-#ifndef MLib_Macros_Normal
-#define MLib_Macros_Normal 20241202
+#ifndef MLibHeader_Macros_NormalHpp
+#define MLibHeader_Macros_NormalHpp 20241202
 #include <utility>
 
 #ifdef min

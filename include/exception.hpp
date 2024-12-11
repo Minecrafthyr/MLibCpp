@@ -1,7 +1,7 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
 // Core Header
-#ifndef MLib_Data
-#define MLib_Data 20241201
+#ifndef MLibHeader_DataHpp
+#define MLibHeader_DataHpp 20241201
 #include <stdexcept>
 #include <system_error>
 

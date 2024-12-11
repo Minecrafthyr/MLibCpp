@@ -1,6 +1,6 @@
 // Copy_right © 2024 Minecraft_hyr - MIT License
-#ifndef MLibWrapped
-#define MLibWrapped 20241109
+#ifndef MLibHeader_WrappedHpp
+#define MLibHeader_WrappedHpp 20241109
 
 #include <charconv>
 #include <string>

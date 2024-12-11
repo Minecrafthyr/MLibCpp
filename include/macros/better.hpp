@@ -2,8 +2,8 @@
 // Core Header
 
 
-#ifndef MLib_Macros_Better
-#define MLib_Macros_Better 20241121L
+#ifndef MLibHeader_Macros_BetterHpp
+#define MLibHeader_Macros_BetterHpp 20241121
 
 #include <corecrt.h>
 #include "normal.hpp"

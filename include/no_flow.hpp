@@ -1,6 +1,6 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
-#ifndef MLib_NoFlow
-#define MLib_NoFlow 20241112L
+#ifndef MLibHeader_NoFlowHpp
+#define MLibHeader_NoFlowHpp 20241112L
 #include <concepts>
 #include <limits>
 #include <utility>
@@ -35,7 +35,7 @@ constexpr auto no_flow_add(T _a, T _b) {
 	static constexpr unsigned_type Min = 0, Max = ~Min;
 
 	auto C = _a + _b;
-	if (auto _half = _a >> 1 + _b >> 1;
+	if (auto _half = (_a >> 1) + (_b >> 1);
 	_half > Max >> 1 || (_half == Max >> 1 && _a % 2 && _b % 2))
 		return Max;
 	return C;
@@ -58,7 +58,7 @@ constexpr flow_state flow_state_add(T _a, T _b) {
 	using signed_type = ::std::make_signed_t<T>;
 	static constexpr unsigned_type Min = 0, Max = ~Min;
 
-	if (auto _half = _a >> 1 + _b >> 1;
+	if (auto _half = (_a >> 1) + (_b >> 1);
 	_half > Max >> 1 || (_half == Max >> 1 && _a % 2 && _b % 2))
 		return flow_state::overflow;
 	return flow_state::no_flow;
@@ -77,37 +77,31 @@ constexpr auto flow_state_add(T _a, T _b) {
 
 
 template <SignedInt T>
-class no_flow {
+class flowless_int {
 public:
 	using value_type = T;
 	value_type Value;
 
-	constexpr no_flow(const value_type & _v)
+	constexpr flowless_int(const value_type & _v)
 		: Value(_v) {}
-	constexpr operator value_type() {
-		return Value;
-	}
-	constexpr value_type operator*() const {
-		return Value;
-	}
+	constexpr operator value_type() { return Value; }
+	constexpr value_type operator*() const& { return Value; }
 	
 	static constexpr value_type Min =
 		Signed<value_type>
 		? (value_type(1) << (sizeof(value_type) * 8 - 1))
 		: value_type(), Max = ~Min, HalfMax = Max / 2;
 
-	static constexpr auto flow_state_add(const no_flow & _a, const no_flow & _b) {
-		return (flow_state)flow_state_add(_a.Value, _b.Value)
-	}
+	static constexpr auto flow_state_add(flowless_int const& _a, flowless_int const& _b)
+	{ return (flow_state)flow_state_add(_a.Value, _b.Value); }
 
-	constexpr value_type operator+(const no_flow & right) {
-		return no_flow_add(*this, right);
-	}
-	constexpr no_flow & operator+=(const no_flow & right) {
-		return *this = *this + right;
-	}
+	constexpr value_type operator+(flowless_int const& right)
+	{ return no_flow_add(*this, right); }
+	constexpr flowless_int & operator+=(flowless_int const& right)
+	{ return *this = *this + right; }
 
-	constexpr flow_state flow_state_loop_multiphy(no_flow left, UnsignedInt auto right) {
+	constexpr flow_state flow_state_loop_multiphy
+	(flowless_int left, UnsignedInt auto right) {
 		if (right != 0) while (--right != 0)
 		switch (flow_state_add(left, left)) {
 		case flow_state::underflow: return flow_state::underflow;
@@ -116,7 +110,7 @@ public:
 		}
 		return flow_state::no_flow;
 	}
-	constexpr T loop_multiphy(no_flow left, UnsignedInt auto right) {
+	constexpr T loop_multiply(flowless_int left, UnsignedInt auto right) {
 		if (right != 0) while (--right != 0)
 		switch (flow_state_add(left, left)) {
 		case flow_state::underflow: return Min;
@@ -126,21 +120,17 @@ public:
 		return *left;
 	}
 
-	constexpr T operator*(UnsignedInt auto right) {
-		return loop_multiphy(*this, right);
-	}
+	constexpr T operator*(UnsignedInt auto right)
+	{ return loop_multiply(*this, right); }
 	constexpr T operator*(std::signed_integral auto right) {
 		return (right < 0)
-			? -loop_multiphy(*this, -right)
-			: loop_multiphy(*this, right);
-
+			? -loop_multiply(*this, -right)
+			: loop_multiply(*this, right);
 	}
-	constexpr no_flow & operator*=(UnsignedInt auto right) {
-		return *this = *this * right;
-	}
-	constexpr no_flow & operator*=(std::signed_integral auto right) {
-		return *this = *this * right;
-	}
+	constexpr flowless_int & operator*=(UnsignedInt auto right)
+	{ return *this = *this * right; }
+	constexpr flowless_int & operator*=(std::signed_integral auto right)
+	{ return *this = *this * right; }
 
 };
 

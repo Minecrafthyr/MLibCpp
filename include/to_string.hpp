@@ -3,8 +3,10 @@
 #include <ranges>
 #include <sstream>
 
-namespace mlib {
+#ifndef MLibHeader_ToStringHpp
+#define MLibHeader_ToStringHpp 20241204
 
+namespace mlib {
 
 using ::std::to_string;
 template <typename ... Args>
@@ -94,5 +96,6 @@ inline void println(FILE * _stream, ::std::string_view _str) {
 }
 inline void println(::std::string_view _str) { println(stdout, _str); }
 
-
 }
+
+#endif

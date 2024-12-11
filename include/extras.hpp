@@ -1,6 +1,6 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
-#ifndef MLib_Extras
-#define MLib_Extras 20241118L
+#ifndef MLibHeader_ExtrasHpp
+#define MLibHeader_ExtrasHpp 20241118
 #include "exception.hpp"
 #include "macros/normal.hpp"
 

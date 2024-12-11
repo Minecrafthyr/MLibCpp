@@ -1,6 +1,6 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
-#ifndef MLib_Struct_2D
-#define MLib_Struct_2D 20241113L
+#ifndef MLibHeader_Struct_2DHpp
+#define MLibHeader_Struct_2DHpp 20241113
 
 #include "base.hpp"
 

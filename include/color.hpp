@@ -1,7 +1,7 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
 // Core Header
-#ifndef MLib_Color
-#define MLib_Color 20241112L
+#ifndef MLibHeader_ColorHpp
+#define MLibHeader_ColorHpp 20241112L
 
 #include <array>
 #include <cstdint>

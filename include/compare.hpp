@@ -1,7 +1,7 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
 // Core Header
-#ifndef MLib_Compare
-#define MLib_Compare 20241112L
+#ifndef MLibHeader_CompareHpp
+#define MLibHeader_CompareHpp 20241112
 #include <compare>
 #include "types.hpp"
 

@@ -1,6 +1,6 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
-#ifndef MLib_Struct_Base
-#define MLib_Struct_Base 20241113L
+#ifndef MLibHeader_Struct_BaseHpp
+#define MLibHeader_Struct_BaseHpp 20241113
 
 #include <array>
 #include "../types.hpp"

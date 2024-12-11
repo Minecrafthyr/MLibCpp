@@ -1,9 +1,8 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
-#ifndef MLib_Pair
-#define MLib_Pair 20241121L
+#ifndef MLibHeader_PairHpp
+#define MLibHeader_PairHpp 20241121L
 #include <tuple>
 #include "types.hpp"
-
 
 namespace mlib {
 

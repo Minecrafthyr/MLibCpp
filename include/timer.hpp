@@ -1,6 +1,6 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
-#ifndef MLib_Timer
-#define MLib_Timer 20241103L
+#ifndef MLibHeader_TimerHpp
+#define MLibHeader_TimerHpp 20241103
 
 #include <cstdint>
 #include <array>

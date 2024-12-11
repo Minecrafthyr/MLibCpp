@@ -1,6 +1,6 @@
 // Copyright © 2024 Minecraft_hyr - MIT License
-#ifndef MLib_Optional
-#define MLib_Optional 20241112L
+#ifndef MLibHeader_OptionalHpp
+#define MLibHeader_OptionalHpp 20241112
 
 #include <optional>
 #include "types.hpp"
